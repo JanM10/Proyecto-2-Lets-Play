@@ -19,8 +19,6 @@ public:
 	void MoveDown();
 	int GetPressedItem() { return selectedItemIndex; }
 
-	void inicar_menu();
-
 private:
 	int selectedItemIndex;
 	sf::Font font;

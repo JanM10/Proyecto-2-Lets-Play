@@ -35,9 +35,6 @@ int main()
 
 	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
 
-	CircleShape balon(100);
-	balon.setFillColor(Color::Magenta);
-
 	Menu menu(window.getSize().x, window.getSize().y);
 
 	while (window.isOpen())
@@ -94,18 +91,19 @@ int main()
 
 		menu.draw(window);
 
-		window.draw(balon);
-
 		window.display();
 	}
 
 	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "Lets play");
 	ventana.setFramerateLimit(60);
 
+	CircleShape balon(100);
+	balon.setFillColor(Color::Magenta);
 
 	while (ventana.isOpen())
 	{
 		// check all the window's events that were triggered since the last iteration of the loop
+
 		sf::Event event;
 		while (ventana.pollEvent(event))
 		{
@@ -132,6 +130,9 @@ int main()
 			}
 		}
 		ventana.clear();
+
+		ventana.draw(balon);
+
 		ventana.display();
 	}
 	

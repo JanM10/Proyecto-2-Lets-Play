@@ -65,9 +65,4 @@ void Menu::MoveDown()
 	}
 }
 
-void Menu::inicar_menu()
-{
-
-}
-
 
