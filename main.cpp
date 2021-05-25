@@ -121,6 +121,9 @@ int main()
 				case Mouse::Left:
 					cout << "Se preciono la izquierda" << endl;
 					break;
+				case Mouse::Right:
+					cout << "Se preciono la derecha" << endl;
+					break;
 				}
 				break;
 			}
