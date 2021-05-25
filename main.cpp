@@ -1,19 +1,152 @@
-#include <iostream>
 #include "SFML/Graphics.hpp"
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+
+#include "Menu.h"
 
 using namespace std;
 using namespace sf;
 
-int main(int argc, char *args[]) {
+//Menu ventana_nueva;
+bool verificar(int num, int arreglo[20]);
 
-	bool flag = false;
+int main()
+{
+	srand(time(NULL)); //Numeros aleatorios
+	int arreglo[20], num = 0;
 
-	RenderWindow ventana(VideoMode(800, 600, 32), "Lets Play");
+	//Para que no se repitan los numeros en el arreglo
 
-	while (!flag)
+	for (int i = 0; i < 20; i++)
 	{
-		ventana.display();
+		while (verificar(num, arreglo)) {
+
+			num = rand() % (21 - 1); //
+		}
+
+		arreglo[i] = num;
 	}
 
-	return 0;
+	for (int i = 0; i < 20; i++)
+	{
+		cout << arreglo[i] << " ";
+	}
+
+	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
+
+	Menu menu(window.getSize().x, window.getSize().y);
+
+	while (window.isOpen())
+	{
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::KeyReleased:
+				switch (event.key.code)
+				{
+				case sf::Keyboard::Up:
+					menu.MoveUp();
+					break;
+
+				case sf::Keyboard::Down:
+					menu.MoveDown();
+					break;
+
+				case sf::Keyboard::Return:
+					switch (menu.GetPressedItem())
+					{
+					case 0:
+						std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
+						//window.setVisible(false);
+						window.close();
+						break;
+					case 1:
+						std::cout << "BP Game se esta abriendo" << std::endl;
+						break;
+					case 2:
+						std::cout << "Abriendo las opciones" << std::endl;
+						break;
+					case 3:
+						window.close();
+						break;
+					}
+
+					break;
+				}
+
+				break;
+			case sf::Event::Closed:
+				window.close();
+
+				break;
+
+			}
+		}
+
+		window.clear();
+
+		menu.draw(window);
+
+		window.display();
+	}
+
+	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "Lets play");
+	ventana.setFramerateLimit(60);
+
+	CircleShape balon(100);
+	balon.setFillColor(Color::Magenta);
+
+	while (ventana.isOpen())
+	{
+		// check all the window's events that were triggered since the last iteration of the loop
+
+		sf::Event event;
+		while (ventana.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case Event::Closed:
+				ventana.close();
+				break;
+
+			case Event::MouseButtonReleased:
+				cout << "Se preciono" << endl;
+
+				switch (event.key.code)
+				{
+				case Mouse::Left:
+					cout << "Se preciono la izquierda" << endl;
+					break;
+				}
+				break;
+			}
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed) {
+				ventana.close();
+			}
+		}
+		ventana.clear();
+
+		ventana.draw(balon);
+
+		ventana.display();
+	}
+	
 }
+
+//Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
+bool verificar(int num, int arreglo[20]) 
+{
+	for (int i = 0; i < 20; i++)
+	{
+		if (num == arreglo[i]) {
+			return true; //Si el numero ya existe retorna verdadero.
+		}
+	}
+	return false; //Si el numero NO existe retorna falso.
+}
+
