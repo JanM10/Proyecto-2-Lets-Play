@@ -10,6 +10,34 @@ using namespace sf;
 
 //Menu ventana_nueva;
 bool verificar(int num, int arreglo[20]);
+Vector2f v_przesun(0, 5);
+class Pilka :public CircleShape
+{
+public:
+
+    Pilka(float r = 50) :CircleShape(r)
+    {
+        this->setOrigin(r, r);
+        this->setPosition(350, 250);
+        this->setFillColor(Color(56, 200, 210));
+    }
+
+    void przesun()
+    {
+        if (this->getPosition().x <= 50 || this->getPosition().x >= 1400)
+        {
+            v_przesun.x *= -1;
+        }
+        if (this->getPosition().y <= 50 || this->getPosition().y >= 800)
+        {
+            v_przesun.y *= -1;
+        }
+        this->move(v_przesun);
+    }
+
+
+
+};
 
 int main()
 {
@@ -95,49 +123,112 @@ int main()
 	}
 
 	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "Lets play");
-	ventana.setFramerateLimit(60);
 
 	CircleShape balon(100);
 	balon.setFillColor(Color::Magenta);
+    ventana.setFramerateLimit(120);
+    int klatki = 0;
+    Pilka pilka;
 
-	while (ventana.isOpen())
-	{
-		// check all the window's events that were triggered since the last iteration of the loop
+    Event e;
 
-		sf::Event event;
-		while (ventana.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case Event::Closed:
-				ventana.close();
-				break;
+    while (ventana.isOpen())
+    {
+        while (ventana.pollEvent(e))
+        {
+            if (e.type == Event::Closed || (Keyboard::isKeyPressed(Keyboard::Escape)))
+                ventana.close();
 
-			case Event::MouseButtonReleased:
-				cout << "Se preciono" << endl;
+            if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Left)
+            {
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //lewy gorny rog
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 18)
+                {
+                    v_przesun.x = 5;
+                    v_przesun.y = 5;
+                }
 
-				switch (event.key.code)
-				{
-				case Mouse::Left:
-					cout << "Se preciono la izquierda" << endl;
-					break;
-				case Mouse::Right:
-					cout << "Se preciono la derecha" << endl;
-					break;
-				}
-				break;
-			}
-			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed) {
-				ventana.close();
-			}
-		}
-		ventana.clear();
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 33 &&  //gora
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 33 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 18)
+                {
+                    v_przesun.x = 0;
+                    v_przesun.y = 5;
+                }
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 34 &&  //prawy gorny rog
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 50 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 17)
+                {
+                    v_przesun.x = -5;
+                    v_przesun.y = 5;
+                }
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //lewy
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 18 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 17)
+                {
+                    v_przesun.x = 5;
+                    v_przesun.y = 0;
+                }
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 18 &&  //prawy
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 50 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 17 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 18)
+                {
+                    v_przesun.x = -5;
+                    v_przesun.y = 0;
+                }
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 17 &&  //dol
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 17 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
+                {
+                    v_przesun.x = 0;
+                    v_przesun.y = -5;
+                }
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //lewy dolny rog
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
+                {
+                    v_przesun.x = 5;
+                    v_przesun.y = -5;
+                }
+                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 18 &&  //prawy dolny rog
+                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 100 &&
+                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
+                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
+                {
+                    v_przesun.x = -5;
+                    v_przesun.y = -5;
+                }
 
-		ventana.draw(balon);
 
-		ventana.display();
-	}
+
+            }
+        }
+
+        ventana.clear(Color::White);
+
+        klatki += 1;
+        if (klatki == 60)
+        {
+            cout << "*";
+            klatki = 0;
+        }
+
+        pilka.przesun();
+        ventana.draw(pilka);
+        ventana.display();
+
+
+
+
+    }
 	
 }
 
