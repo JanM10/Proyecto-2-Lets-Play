@@ -22,7 +22,7 @@ int main()
 	{
 		while (verificar(num, arreglo)) {
 
-			num = rand() % (21 - 1); //
+			num = rand() % (21 - 1); 
 		}
 
 		arreglo[i] = num;
@@ -94,11 +94,24 @@ int main()
 		window.display();
 	}
 
-	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "Lets play");
+	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP GAME");
 	ventana.setFramerateLimit(60);
 
-	CircleShape balon(100);
-	balon.setFillColor(Color::Magenta);
+	sf::RectangleShape displayRects[15 * 15];
+
+	for (int i = 0; i < 15; i++)
+	{
+		for (int j = 0; j < 15; j++)
+		{
+			displayRects[i + j * 15].setPosition(i * 40.f, j * 40.f);
+			displayRects[i + j * 15].setSize(sf::Vector2f(40.f, 40.f));
+			displayRects[i + j * 15].setOutlineThickness(1.f);
+			displayRects[i + j * 15].setOutlineColor(sf::Color(0, 0, 0));
+		}
+	}
+
+	//CircleShape balon(100);
+	//balon.setFillColor(Color::Magenta);
 
 	while (ventana.isOpen())
 	{
@@ -129,9 +142,14 @@ int main()
 				ventana.close();
 			}
 		}
-		ventana.clear();
+		ventana.clear(sf::Color(255, 255, 255));
 
-		ventana.draw(balon);
+		//ventana.draw(balon);
+
+		for (int i = 0; i < 15 * 15; i++)
+		{
+			ventana.draw(displayRects[i]);
+		}
 
 		ventana.display();
 	}
