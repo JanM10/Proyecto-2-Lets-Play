@@ -10,7 +10,7 @@ using namespace sf;
 
 //Menu ventana_nueva;
 bool verificar(int num, int arreglo[20]);
-Vector2f v_przesun(0, 5);
+Vector2f v_przesun(-5, 0);
 class Pilka :public CircleShape
 {
 public:
@@ -18,7 +18,7 @@ public:
     Pilka(float r = 50) :CircleShape(r)
     {
         this->setOrigin(r, r);
-        this->setPosition(350, 250);
+        this->setPosition(700, 200);
         this->setFillColor(Color(56, 200, 210));
     }
 
@@ -33,8 +33,22 @@ public:
             v_przesun.y *= -1;
         }
         this->move(v_przesun);
+        
     }
 
+
+
+};
+class Bola :public CircleShape
+{
+public:
+
+    Bola(float r = 50) :CircleShape(r)
+    {
+        this->setOrigin(r, r);
+        this->setPosition(350, 200);
+        this->setFillColor(Color(255, 0, 0));
+    }
 
 
 };
@@ -123,12 +137,10 @@ int main()
 	}
 
 	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "Lets play");
-
-	CircleShape balon(100);
-	balon.setFillColor(Color::Magenta);
     ventana.setFramerateLimit(120);
     int klatki = 0;
     Pilka pilka;
+    Bola bola;
 
     Event e;
 
@@ -139,76 +151,149 @@ int main()
             if (e.type == Event::Closed || (Keyboard::isKeyPressed(Keyboard::Escape)))
                 ventana.close();
 
-            if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Left)
+            if (bola.getGlobalBounds().intersects(pilka.getGlobalBounds()))
             {
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //lewy gorny rog
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 18)
+                if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //lewy gorny rog
+                    bola.getPosition().x <= pilka.getPosition().x - 18 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 50 &&
+                    bola.getPosition().y <= pilka.getPosition().y - 18)
                 {
                     v_przesun.x = 5;
                     v_przesun.y = 5;
                 }
 
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 33 &&  //gora
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 33 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 18)
+                if (bola.getPosition().x >= pilka.getPosition().x - 33 &&  //gora
+                    bola.getPosition().x <= pilka.getPosition().x + 33 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 50 &&
+                    bola.getPosition().y <= pilka.getPosition().y - 18)
                 {
                     v_przesun.x = 0;
                     v_przesun.y = 5;
                 }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 34 &&  //prawy gorny rog
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 50 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 17)
+                if (bola.getPosition().x >= pilka.getPosition().x + 34 &&  //prawy gorny rog
+                    bola.getPosition().x <= pilka.getPosition().x + 50 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 50 &&
+                    bola.getPosition().y <= pilka.getPosition().y - 17)
                 {
                     v_przesun.x = -5;
                     v_przesun.y = 5;
                 }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //lewy
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 17)
+                if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //lewy
+                    bola.getPosition().x <= pilka.getPosition().x - 18 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 17)
                 {
                     v_przesun.x = 5;
                     v_przesun.y = 0;
                 }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 18 &&  //prawy
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 50 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 17 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 18)
+                if (bola.getPosition().x >= pilka.getPosition().x + 18 &&  //prawy
+                    bola.getPosition().x <= pilka.getPosition().x + 50 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 17 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 18)
                 {
                     v_przesun.x = -5;
                     v_przesun.y = 0;
                 }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 17 &&  //dol
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 17 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
+                if (bola.getPosition().x >= pilka.getPosition().x - 17 &&  //dol
+                    bola.getPosition().x <= pilka.getPosition().x + 17 &&
+                    bola.getPosition().y >= pilka.getPosition().y + 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 50)
                 {
                     v_przesun.x = 0;
                     v_przesun.y = -5;
                 }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //lewy dolny rog
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
+                if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //lewy dolny rog
+                    bola.getPosition().x <= pilka.getPosition().x - 18 &&
+                    bola.getPosition().y >= pilka.getPosition().y + 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 50)
                 {
                     v_przesun.x = 5;
                     v_przesun.y = -5;
                 }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 18 &&  //prawy dolny rog
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 100 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
+                if (bola.getPosition().x >= pilka.getPosition().x + 18 &&  //prawy dolny rog
+                    bola.getPosition().x <= pilka.getPosition().x + 100 &&
+                    bola.getPosition().y >= pilka.getPosition().y + 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 50)
                 {
                     v_przesun.x = -5;
                     v_przesun.y = -5;
                 }
+                          
+            }
 
+            if (bola.getGlobalBounds().intersects(pilka.getGlobalBounds()))
+            {
+                if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //lewy gorny rog
+                    bola.getPosition().x <= pilka.getPosition().x - 18 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 50 &&
+                    bola.getPosition().y <= pilka.getPosition().y - 18)
+                {
+                    v_przesun.x = 5;
+                    v_przesun.y = 5;
+                }
 
-
+                if (bola.getPosition().x >= pilka.getPosition().x - 33 &&  //gora
+                    bola.getPosition().x <= pilka.getPosition().x + 33 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 50 &&
+                    bola.getPosition().y <= pilka.getPosition().y - 18)
+                {
+                    v_przesun.x = 0;
+                    v_przesun.y = 5;
+                }
+                if (bola.getPosition().x >= pilka.getPosition().x + 34 &&  //prawy gorny rog
+                    bola.getPosition().x <= pilka.getPosition().x + 50 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 50 &&
+                    bola.getPosition().y <= pilka.getPosition().y - 17)
+                {
+                    v_przesun.x = -5;
+                    v_przesun.y = 5;
+                }
+                if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //lewy
+                    bola.getPosition().x <= pilka.getPosition().x - 18 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 17)
+                {
+                    v_przesun.x = 5;
+                    v_przesun.y = 0;
+                }
+                if (bola.getPosition().x >= pilka.getPosition().x + 18 &&  //prawy
+                    bola.getPosition().x <= pilka.getPosition().x + 50 &&
+                    bola.getPosition().y >= pilka.getPosition().y - 17 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 18)
+                {
+                    v_przesun.x = -5;
+                    v_przesun.y = 0;
+                }
+                if (bola.getPosition().x >= pilka.getPosition().x - 17 &&  //dol
+                    bola.getPosition().x <= pilka.getPosition().x + 17 &&
+                    bola.getPosition().y >= pilka.getPosition().y + 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 50)
+                {
+                    v_przesun.x = 0;
+                    v_przesun.y = -5;
+                }
+                if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //lewy dolny rog
+                    bola.getPosition().x <= pilka.getPosition().x - 18 &&
+                    bola.getPosition().y >= pilka.getPosition().y + 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 50)
+                {
+                    v_przesun.x = 5;
+                    v_przesun.y = -5;
+                }
+                if (bola.getPosition().x >= pilka.getPosition().x + 18 &&  //prawy dolny rog
+                    bola.getPosition().x <= pilka.getPosition().x + 100 &&
+                    bola.getPosition().y >= pilka.getPosition().y + 18 &&
+                    bola.getPosition().y <= pilka.getPosition().y + 50)
+                {
+                    v_przesun.x = -5;
+                    v_przesun.y = -5;
+                }
+            }
+            
+            if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Right)
+            {
+                v_przesun.x = 0;
+                v_przesun.y = 0;
             }
         }
 
@@ -223,6 +308,7 @@ int main()
 
         pilka.przesun();
         ventana.draw(pilka);
+        ventana.draw(bola);
         ventana.display();
 
 
