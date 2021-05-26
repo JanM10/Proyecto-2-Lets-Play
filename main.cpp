@@ -95,8 +95,23 @@ int main()
 	}
 
 	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP GAME");
-	ventana.setFramerateLimit(60);
+	ventana.setFramerateLimit(120);
 
+	sf::Vector2i player = sf::Vector2i(13, 13);
+	sf::RectangleShape playerRect = sf::RectangleShape(sf::Vector2f(40.f, 40.f));
+	playerRect.setPosition(player.x * 40.f, player.x * 40.f);
+	playerRect.setFillColor(sf::Color(0, 180, 0));
+	playerRect.setOutlineThickness(1.f);
+	playerRect.setOutlineColor(sf::Color(0 ,0, 0));
+
+	sf::Vector2i opponent = sf::Vector2i(1, 1);
+	sf::RectangleShape opponentRect = sf::RectangleShape(sf::Vector2f(40.f, 40.f));
+	opponentRect.setPosition(opponent.x * 40.f, opponent.x * 40.f);
+	opponentRect.setFillColor(sf::Color(190, 0, 0));
+	opponentRect.setOutlineThickness(1.f);
+	opponentRect.setOutlineColor(sf::Color(0, 0, 0));
+
+	int gameMap[15 * 15];
 	sf::RectangleShape displayRects[15 * 15];
 
 	for (int i = 0; i < 15; i++)
@@ -107,6 +122,16 @@ int main()
 			displayRects[i + j * 15].setSize(sf::Vector2f(40.f, 40.f));
 			displayRects[i + j * 15].setOutlineThickness(1.f);
 			displayRects[i + j * 15].setOutlineColor(sf::Color(0, 0, 0));
+
+			if (!(i == opponent.x && j == opponent.y) && !(i == player.x && j == player.y))
+			{
+				//Se colorean cuadrados aleatoriamente 
+				if (rand() / (float)RAND_MAX < 0.22f || i == 0 || j == 0 || i == 14 || j == 14)
+				{
+					gameMap[i + j * 15] = 1;
+					displayRects[i + j * 15].setFillColor(sf::Color(0, 0, 0));
+				}
+			}
 		}
 	}
 
@@ -140,8 +165,31 @@ int main()
 			// "close requested" event: we close the window
 			if (event.type == sf::Event::Closed) {
 				ventana.close();
+			}	
+			else if (event.type == sf::Event::KeyPressed)
+			{
+				switch (event.key.code)
+				{
+				case sf::Keyboard::Up:
+					if (gameMap[player.x + (player.y - 1) * 15] != 1) player.y -= 1;
+					break;
+				case sf::Keyboard::Down:
+					if (gameMap[player.x + (player.y + 1) * 15] != 1) player.y += 1;
+					break;
+				case sf::Keyboard::Right:
+					if (gameMap[player.x + (player.y + 1) * 15] != 1) player.x += 1;
+					break;
+				case sf::Keyboard::Left:
+					if (gameMap[player.x + (player.y - 1) * 15] != 1) player.x -= 1;
+					break;
+				default:
+					break;
+				}
 			}
+
+			playerRect.setPosition(player.x * 40.f, player.y * 40.f);
 		}
+		//Updates the game 
 		ventana.clear(sf::Color(255, 255, 255));
 
 		//ventana.draw(balon);
@@ -150,6 +198,9 @@ int main()
 		{
 			ventana.draw(displayRects[i]);
 		}
+
+		ventana.draw(playerRect);
+		ventana.draw(opponentRect);
 
 		ventana.display();
 	}
