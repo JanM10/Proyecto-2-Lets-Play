@@ -96,6 +96,15 @@ int main()
 
 	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP GAME");
 	ventana.setFramerateLimit(120);
+	int frameCount = 0;
+
+	srand(sin(time(nullptr)) * 1000);
+
+	bool updatePath = true;
+	int ordersedSet[15 * 15];
+	int path[100];
+	int pathSize = 0;
+	int pathPos = 0;
 
 	sf::Vector2i player = sf::Vector2i(13, 13);
 	sf::RectangleShape playerRect = sf::RectangleShape(sf::Vector2f(40.f, 40.f));
@@ -187,6 +196,9 @@ int main()
 				}
 			}
 
+			updatePath = true;
+			pathSize = 0;
+			pathPos = 0;
 			playerRect.setPosition(player.x * 40.f, player.y * 40.f);
 		}
 		//Updates the game 
@@ -199,10 +211,124 @@ int main()
 			ventana.draw(displayRects[i]);
 		}
 
+		if (updatePath == true)
+		{
+			int counter = 0;
+
+			int fullSet[2000];
+			int fullSetSize = 0;	
+
+			int openSet[100];
+			int openSetSize = 2;
+			openSet[0] = player.x + player.y * 15;
+			openSet[1] = counter; 
+
+			int currentIndex = player.x + player.y * 15;
+
+			while (currentIndex != opponent.x + opponent.y * 15)
+			{
+				currentIndex = openSet[0];
+				counter = openSet[1] + 1;
+				int neighbors[4];
+
+				neighbors[0] = currentIndex - 1;
+				neighbors[0] = currentIndex + 1;
+				neighbors[0] = currentIndex - 15;
+				neighbors[0] = currentIndex + 15;
+
+				for (int i = 0; i < 8; i += 2)
+				{
+					bool alreadyExists = false;
+
+					for (int j = 0; j < fullSetSize; j++)
+					{
+						if (neighbors[i/2] == fullSet[j])
+						{
+							alreadyExists = true;
+							break;
+						}
+					}
+
+					if (alreadyExists == false)
+					{
+						if (gameMap[neighbors[i/2]] != 1)
+						{
+							fullSet[fullSetSize] = neighbors[i / 2];
+							fullSet[fullSetSize + 1] = counter;
+							fullSetSize += 2;
+
+							openSet[openSetSize] = neighbors[i / 2];
+							openSet[openSetSize + 1] = counter;
+							openSetSize += 2;
+						}
+						else {
+							fullSet[fullSetSize] = neighbors[i / 2];
+							fullSet[fullSetSize + 1] = 100000;
+							fullSetSize += 2;
+						}
+					}
+				}
+
+				for (int i = 0; i < openSetSize; i++)
+				{
+					openSet[i] = openSet[i + 2];
+				}
+				openSetSize -= 2;
+			}
+
+			for (int i = 0; i < 15 * 15; i++)
+			{
+				ordersedSet[i] = 100000;
+			}
+
+			for (int i = 0; i < fullSetSize; i += 2)
+			{
+				ordersedSet[fullSet[i]] = fullSet[i + 1];
+			}
+
+			ordersedSet[player.x + player.y * 15] = 0;
+
+			int pathIndex = opponent.x + opponent.y * 15;
+
+			while (pathIndex != player.x + player.y * 15)
+			{
+				int neighbors[4];
+
+				neighbors[0] = currentIndex - 1;
+				neighbors[0] = currentIndex + 1;
+				neighbors[0] = currentIndex - 15;
+				neighbors[0] = currentIndex + 15;
+
+				int lowest[2]{0, 100000};
+				for (size_t i = 0; i < 4; i++)
+				{
+					lowest[0] = i;
+					lowest[1] = ordersedSet[neighbors[i]];
+				}
+
+				pathIndex = neighbors[lowest[0]];
+
+				path[pathSize] = pathIndex;
+
+				pathSize += 1; 
+			}
+			updatePath = false;
+		}
+
+		if (frameCount % 1000 == 0)
+		{
+			opponent.x = path[pathPos] % 15;
+			opponent.y = floor(path[pathPos]/15);
+			opponentRect.setPosition(opponent.x * 40.f, opponent.y * 40.f);
+			pathPos += 1;
+		}
+
 		ventana.draw(playerRect);
 		ventana.draw(opponentRect);
 
 		ventana.display();
+
+		frameCount += 1;
 	}
 	
 }
