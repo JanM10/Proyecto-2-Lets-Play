@@ -5,343 +5,480 @@
 
 #include "Menu.h"
 
+#include "math.h"
+#include <array>
+#include <chrono>
+#include <cstring>
+#include <iostream>
+#include <queue>
+#include <set>
+#include <stack>
+#include <tuple>
+
 using namespace std;
 using namespace sf;
 
 //Menu ventana_nueva;
-bool verificar(int num, int arreglo[20]);
+//bool verificar(int num, int arreglo[20]);
+//
+//int main()
+//{
+//
+//	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
+//
+//	Menu menu(window.getSize().x, window.getSize().y);
+//
+//	while (window.isOpen())
+//	{
+//		sf::Event event;
+//
+//		while (window.pollEvent(event))
+//		{
+//			switch (event.type)
+//			{
+//			case sf::Event::KeyReleased:
+//				switch (event.key.code)
+//				{
+//				case sf::Keyboard::Up:
+//					menu.MoveUp();
+//					break;
+//
+//				case sf::Keyboard::Down:
+//					menu.MoveDown();
+//					break;
+//
+//				case sf::Keyboard::Return:
+//					switch (menu.GetPressedItem())
+//					{
+//					case 0:
+//						std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
+//						//window.setVisible(false);
+//						window.close();
+//						break;
+//					case 1:
+//						std::cout << "BP Game se esta abriendo" << std::endl;
+//						break;
+//					case 2:
+//						std::cout << "Abriendo las opciones" << std::endl;
+//						break;
+//					case 3:
+//						window.close();
+//						break;
+//					}
+//
+//					break;
+//				}
+//
+//				break;
+//			case sf::Event::Closed:
+//				window.close();
+//
+//				break;
+//
+//			}
+//		}
+//
+//		window.clear();
+//
+//		menu.draw(window);
+//
+//		window.display();
+//	}
+//
+//	/////////////////////////////////////////////////////////////////////
+//	sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
+//	const int chanchaX = 60;
+//	const int chanchaY = 60;
+//	sf::RectangleShape cuadrados(sf::Vector2f(chanchaX, chanchaY));
+//
+//	const int tamanoCancha = 22;
+//
+//	vector<vector<RectangleShape>> cuadradosCancha;
+//
+//	cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
+//
+//	srand(time(NULL)); //Numeros aleatorios
+//	int arreglo[20], num = 5;
+//
+//	//Para que no se repitan los numeros en el arreglo
+//
+//	for (int i = 0; i < 10; i++)
+//	{
+//		while (verificar(num, arreglo)) {
+//
+//			num = rand() % (10);
+//		}
+//
+//		arreglo[i] = num;
+//	}
+//
+//	for (int i = 0; i < 4; i++)
+//	{
+//		cout << arreglo[i] << " ";
+//	}
+//
+//
+//	for (int x = 0; x < 21; x++)
+//	{
+//		cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
+//		for (int y = 0; y < 11; y++)
+//		{
+//			cuadradosCancha[x][y].setSize(sf::Vector2f(chanchaX, chanchaY));
+//			cuadradosCancha[x][y].setFillColor(Color::Green);
+//			cuadradosCancha[x][y].setOutlineThickness(3.0f);
+//			cuadradosCancha[x][y].setOutlineColor(Color::Black);
+//			cuadradosCancha[x][y].setPosition((x+1) * chanchaX, (y+1) * chanchaY);
+//		}
+//	}
+//
+//
+//	// run the program as long as the window is open
+//	while (ventanaPrueba.isOpen())
+//	{
+//		// check all the window's events that were triggered since the last iteration of the loop
+//		sf::Event event;
+//		while (ventanaPrueba.pollEvent(event))
+//		{
+//			// "close requested" event: we close the window
+//			if (event.type == sf::Event::Closed)
+//				ventanaPrueba.close();
+//
+//			ventanaPrueba.clear(sf::Color(0, 255, 255));
+//
+//			for (int x = 0; x < 21; x++)
+//			{
+//				for (int y = 0; y < 11; y++)
+//				{
+//					ventanaPrueba.draw(cuadradosCancha[x][y]);
+//				}
+//			}
+//
+//			ventanaPrueba.display();
+//		}
+//	}
+//
+//}
+//
+////Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
+//bool verificar(int num, int arreglo[20]) 
+//{
+//	for (int i = 0; i < 20; i++)
+//	{
+//		if (num == arreglo[i]) {
+//			return true; //Si el numero ya existe retorna verdadero.
+//		}
+//	}
+//	return false; //Si el numero NO existe retorna falso.
+//}
 
+//////////////////////////////////////////////////////////
+
+// A C++ Program to implement A* Search Algorithm
+
+
+
+// Creating a shortcut for int, int pair type
+typedef pair<int, int> Pair;
+// Creating a shortcut for tuple<int, int, int> type
+typedef tuple<double, int, int> Tuple;
+
+// A structure to hold the neccesary parameters
+struct cell {
+	// Row and Column index of its parent
+	Pair parent;
+	// f = g + h
+	double f, g, h;
+	cell()
+		: parent(-1, -1)
+		, f(-1)
+		, g(-1)
+		, h(-1)
+	{
+	}
+};
+
+// A Utility Function to check whether given cell (row, col)
+// is a valid cell or not.
+template <size_t ROW, size_t COL>
+bool isValid(const array<array<int, COL>, ROW>& grid,
+	const Pair& point)
+{ // Returns true if row number and column number is in
+// range
+	if (ROW > 0 && COL > 0)
+		return (point.first >= 0) && (point.first < ROW)
+		&& (point.second >= 0)
+		&& (point.second < COL);
+
+	return false;
+}
+
+// A Utility Function to check whether the given cell is
+// blocked or not
+template <size_t ROW, size_t COL>
+bool isUnBlocked(const array<array<int, COL>, ROW>& grid,
+	const Pair& point)
+{
+	// Returns true if the cell is not blocked else false
+	return isValid(grid, point)
+		&& grid[point.first][point.second] == 1;
+}
+
+// A Utility Function to check whether destination cell has
+// been reached or not
+bool isDestination(const Pair& position, const Pair& dest)
+{
+	return position == dest;
+}
+
+// A Utility Function to calculate the 'h' heuristics.
+double calculateHValue(const Pair& src, const Pair& dest)
+{
+	// h is estimated with the two points distance formula
+	return sqrt(pow((src.first - dest.first), 2.0)
+		+ pow((src.second - dest.second), 2.0));
+}
+
+// A Utility Function to trace the path from the source to
+// destination
+template <size_t ROW, size_t COL>
+void tracePath(
+	const array<array<cell, COL>, ROW>& cellDetails,
+	const Pair& dest)
+{
+	printf("\nThe Path is ");
+
+	stack<Pair> Path;
+
+	int row = dest.second;
+	int col = dest.second;
+	Pair next_node = cellDetails[row][col].parent;
+	do {
+		Path.push(next_node);
+		next_node = cellDetails[row][col].parent;
+		row = next_node.first;
+		col = next_node.second;
+	} while (cellDetails[row][col].parent != next_node);
+
+	Path.emplace(row, col);
+	while (!Path.empty()) {
+		Pair p = Path.top();
+		Path.pop();
+		printf("-> (%d,%d) ", p.first, p.second);
+	}
+}
+
+// A Function to find the shortest path between a given
+// source cell to a destination cell according to A* Search
+// Algorithm
+template <size_t ROW, size_t COL>
+void aStarSearch(const array<array<int, COL>, ROW>& grid,
+	const Pair& src, const Pair& dest)
+{
+	// If the source is out of range
+	if (!isValid(grid, src)) {
+		printf("Source is invalid\n");
+		return;
+	}
+
+	// If the destination is out of range
+	if (!isValid(grid, dest)) {
+		printf("Destination is invalid\n");
+		return;
+	}
+
+	// Either the source or the destination is blocked
+	if (!isUnBlocked(grid, src)
+		|| !isUnBlocked(grid, dest)) {
+		printf("Source or the destination is blocked\n");
+		return;
+	}
+
+	// If the destination cell is the same as source cell
+	if (isDestination(src, dest)) {
+		printf("We are already at the destination\n");
+		return;
+	}
+
+	// Create a closed list and initialise it to false which
+	// means that no cell has been included yet This closed
+	// list is implemented as a boolean 2D array
+	bool closedList[ROW][COL];
+	memset(closedList, false, sizeof(closedList));
+
+	// Declare a 2D array of structure to hold the details
+	// of that cell
+	array<array<cell, COL>, ROW> cellDetails;
+
+	int i, j;
+	// Initialising the parameters of the starting node
+	i = src.first, j = src.second;
+	cellDetails[i][j].f = 0.0;
+	cellDetails[i][j].g = 0.0;
+	cellDetails[i][j].h = 0.0;
+	cellDetails[i][j].parent = { i, j };
+
+	/*
+	Create an open list having information as-
+	<f, <i, j>>
+	where f = g + h,
+	and i, j are the row and column index of that cell
+	Note that 0 <= i <= ROW-1 & 0 <= j <= COL-1
+	This open list is implenented as a set of tuple.*/
+	std::priority_queue<Tuple, std::vector<Tuple>,
+		std::greater<Tuple> >
+		openList;
+
+	// Put the starting cell on the open list and set its
+	// 'f' as 0
+	openList.emplace(0.0, i, j);
+
+	// We set this boolean value as false as initially
+	// the destination is not reached.
+	while (!openList.empty()) {
+		const Tuple& p = openList.top();
+		// Add this vertex to the closed list
+		i = get<1>(p); // second element of tupla
+		j = get<2>(p); // third element of tupla
+
+		// Remove this vertex from the open list
+		openList.pop();
+		closedList[i][j] = true;
+		/*
+				Generating all the 8 successor of this cell
+						N.W N N.E
+						\ | /
+						\ | /
+						W----Cell----E
+								/ | \
+						/ | \
+						S.W S S.E
+
+				Cell-->Popped Cell (i, j)
+				N --> North	 (i-1, j)
+				S --> South	 (i+1, j)
+				E --> East	 (i, j+1)
+				W --> West		 (i, j-1)
+				N.E--> North-East (i-1, j+1)
+				N.W--> North-West (i-1, j-1)
+				S.E--> South-East (i+1, j+1)
+				S.W--> South-West (i+1, j-1)
+		*/
+		for (int add_x = -1; add_x <= 1; add_x++) {
+			for (int add_y = -1; add_y <= 1; add_y++) {
+				Pair neighbour(i + add_x, j + add_y);
+				// Only process this cell if this is a valid
+				// one
+				if (isValid(grid, neighbour)) {
+					// If the destination cell is the same
+					// as the current successor
+					if (isDestination(
+						neighbour,
+						dest)) { // Set the Parent of
+								// the destination cell
+						cellDetails[neighbour.first]
+							[neighbour.second]
+						.parent
+							= { i, j };
+						printf("The destination cell is "
+							"found\n");
+						tracePath(cellDetails, dest);
+						return;
+					}
+					// If the successor is already on the
+					// closed list or if it is blocked, then
+					// ignore it. Else do the following
+					else if (!closedList[neighbour.first]
+						[neighbour.second]
+					&& isUnBlocked(grid,
+						neighbour)) {
+						double gNew, hNew, fNew;
+						gNew = cellDetails[i][j].g + 1.0;
+						hNew = calculateHValue(neighbour,
+							dest);
+						fNew = gNew + hNew;
+
+						// If it isn’t on the open list, add
+						// it to the open list. Make the
+						// current square the parent of this
+						// square. Record the f, g, and h
+						// costs of the square cell
+						//			 OR
+						// If it is on the open list
+						// already, check to see if this
+						// path to that square is better,
+						// using 'f' cost as the measure.
+						if (cellDetails[neighbour.first]
+							[neighbour.second]
+						.f
+							== -1
+							|| cellDetails[neighbour.first]
+							[neighbour.second]
+						.f
+		> fNew) {
+							openList.emplace(
+								fNew, neighbour.first,
+								neighbour.second);
+
+							// Update the details of this
+							// cell
+							cellDetails[neighbour.first]
+								[neighbour.second]
+							.g
+								= gNew;
+							cellDetails[neighbour.first]
+								[neighbour.second]
+							.h
+								= hNew;
+							cellDetails[neighbour.first]
+								[neighbour.second]
+							.f
+								= fNew;
+							cellDetails[neighbour.first]
+								[neighbour.second]
+							.parent
+								= { i, j };
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// When the destination cell is not found and the open
+	// list is empty, then we conclude that we failed to
+	// reach the destiantion cell. This may happen when the
+	// there is no way to destination cell (due to
+	// blockages)
+	printf("Failed to find the Destination Cell\n");
+}
+
+// Driver program to test above function
 int main()
 {
-	srand(time(NULL)); //Numeros aleatorios
-	int arreglo[20], num = 0;
+	/* Description of the Grid-
+	1--> The cell is not blocked
+	0--> The cell is blocked */
+	array<array<int, 10>, 9> grid{
+		{ { { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
+		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 } },
+		{ { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 } },
+		{ { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 } },
+		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 } },
+		{ { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 } },
+		{ { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 } },
+		{ { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
+		{ { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 } } }
+	};
 
-	//Para que no se repitan los numeros en el arreglo
+	// Source is the left-most bottom-most corner
+	Pair src(8, 0);
 
-	for (int i = 0; i < 20; i++)
-	{
-		while (verificar(num, arreglo)) {
+	// Destination is the left-most top-most corner
+	Pair dest(2, 2);
 
-			num = rand() % (21 - 1); 
-		}
+	aStarSearch(grid, src, dest);
 
-		arreglo[i] = num;
-	}
-
-	for (int i = 0; i < 20; i++)
-	{
-		cout << arreglo[i] << " ";
-	}
-
-	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
-
-	Menu menu(window.getSize().x, window.getSize().y);
-
-	while (window.isOpen())
-	{
-		sf::Event event;
-
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case sf::Event::KeyReleased:
-				switch (event.key.code)
-				{
-				case sf::Keyboard::Up:
-					menu.MoveUp();
-					break;
-
-				case sf::Keyboard::Down:
-					menu.MoveDown();
-					break;
-
-				case sf::Keyboard::Return:
-					switch (menu.GetPressedItem())
-					{
-					case 0:
-						std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
-						//window.setVisible(false);
-						window.close();
-						break;
-					case 1:
-						std::cout << "BP Game se esta abriendo" << std::endl;
-						break;
-					case 2:
-						std::cout << "Abriendo las opciones" << std::endl;
-						break;
-					case 3:
-						window.close();
-						break;
-					}
-
-					break;
-				}
-
-				break;
-			case sf::Event::Closed:
-				window.close();
-
-				break;
-
-			}
-		}
-
-		window.clear();
-
-		menu.draw(window);
-
-		window.display();
-	}
-
-	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP GAME");
-	ventana.setFramerateLimit(120);
-	int frameCount = 0;
-
-	srand(sin(time(nullptr)) * 1000);
-
-	bool updatePath = true;
-	int ordersedSet[15 * 15];
-	int path[100];
-	int pathSize = 0;
-	int pathPos = 0;
-
-	sf::Vector2i player = sf::Vector2i(13, 13);
-	sf::RectangleShape playerRect = sf::RectangleShape(sf::Vector2f(40.f, 40.f));
-	playerRect.setPosition(player.x * 40.f, player.x * 40.f);
-	playerRect.setFillColor(sf::Color(0, 180, 0));
-	playerRect.setOutlineThickness(1.f);
-	playerRect.setOutlineColor(sf::Color(0 ,0, 0));
-
-	sf::Vector2i opponent = sf::Vector2i(1, 1);
-	sf::RectangleShape opponentRect = sf::RectangleShape(sf::Vector2f(40.f, 40.f));
-	opponentRect.setPosition(opponent.x * 40.f, opponent.x * 40.f);
-	opponentRect.setFillColor(sf::Color(190, 0, 0));
-	opponentRect.setOutlineThickness(1.f);
-	opponentRect.setOutlineColor(sf::Color(0, 0, 0));
-
-	int gameMap[15 * 15];
-	sf::RectangleShape displayRects[15 * 15];
-
-	for (int i = 0; i < 15; i++)
-	{
-		for (int j = 0; j < 15; j++)
-		{
-			displayRects[i + j * 15].setPosition(i * 40.f, j * 40.f);
-			displayRects[i + j * 15].setSize(sf::Vector2f(40.f, 40.f));
-			displayRects[i + j * 15].setOutlineThickness(1.f);
-			displayRects[i + j * 15].setOutlineColor(sf::Color(0, 0, 0));
-
-			if (!(i == opponent.x && j == opponent.y) && !(i == player.x && j == player.y))
-			{
-				//Se colorean cuadrados aleatoriamente 
-				if (rand() / (float)RAND_MAX < 0.22f || i == 0 || j == 0 || i == 14 || j == 14)
-				{
-					gameMap[i + j * 15] = 1;
-					displayRects[i + j * 15].setFillColor(sf::Color(0, 0, 0));
-				}
-			}
-		}
-	}
-
-	//CircleShape balon(100);
-	//balon.setFillColor(Color::Magenta);
-
-	while (ventana.isOpen())
-	{
-		// check all the window's events that were triggered since the last iteration of the loop
-
-		sf::Event event;
-		while (ventana.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case Event::Closed:
-				ventana.close();
-				break;
-
-			case Event::MouseButtonReleased:
-				cout << "Se preciono" << endl;
-
-				switch (event.key.code)
-				{
-				case Mouse::Left:
-					cout << "Se preciono la izquierda" << endl;
-					break;
-				}
-				break;
-			}
-			// "close requested" event: we close the window
-			if (event.type == sf::Event::Closed) {
-				ventana.close();
-			}	
-			else if (event.type == sf::Event::KeyPressed)
-			{
-				switch (event.key.code)
-				{
-				case sf::Keyboard::Up:
-					if (gameMap[player.x + (player.y - 1) * 15] != 1) player.y -= 1;
-					break;
-				case sf::Keyboard::Down:
-					if (gameMap[player.x + (player.y + 1) * 15] != 1) player.y += 1;
-					break;
-				case sf::Keyboard::Right:
-					if (gameMap[player.x + (player.y + 1) * 15] != 1) player.x += 1;
-					break;
-				case sf::Keyboard::Left:
-					if (gameMap[player.x + (player.y - 1) * 15] != 1) player.x -= 1;
-					break;
-				default:
-					break;
-				}
-			}
-
-			updatePath = true;
-			pathSize = 0;
-			pathPos = 0;
-			playerRect.setPosition(player.x * 40.f, player.y * 40.f);
-		}
-		//Updates the game 
-		ventana.clear(sf::Color(255, 255, 255));
-
-		//ventana.draw(balon);
-
-		for (int i = 0; i < 15 * 15; i++)
-		{
-			ventana.draw(displayRects[i]);
-		}
-
-		if (updatePath == true)
-		{
-			int counter = 0;
-
-			int fullSet[2000];
-			int fullSetSize = 0;	
-
-			int openSet[100];
-			int openSetSize = 2;
-			openSet[0] = player.x + player.y * 15;
-			openSet[1] = counter; 
-
-			int currentIndex = player.x + player.y * 15;
-
-			while (currentIndex != opponent.x + opponent.y * 15)
-			{
-				currentIndex = openSet[0];
-				counter = openSet[1] + 1;
-				int neighbors[4];
-
-				neighbors[0] = currentIndex - 1;
-				neighbors[0] = currentIndex + 1;
-				neighbors[0] = currentIndex - 15;
-				neighbors[0] = currentIndex + 15;
-
-				for (int i = 0; i < 8; i += 2)
-				{
-					bool alreadyExists = false;
-
-					for (int j = 0; j < fullSetSize; j++)
-					{
-						if (neighbors[i/2] == fullSet[j])
-						{
-							alreadyExists = true;
-							break;
-						}
-					}
-
-					if (alreadyExists == false)
-					{
-						if (gameMap[neighbors[i/2]] != 1)
-						{
-							fullSet[fullSetSize] = neighbors[i / 2];
-							fullSet[fullSetSize + 1] = counter;
-							fullSetSize += 2;
-
-							openSet[openSetSize] = neighbors[i / 2];
-							openSet[openSetSize + 1] = counter;
-							openSetSize += 2;
-						}
-						else {
-							fullSet[fullSetSize] = neighbors[i / 2];
-							fullSet[fullSetSize + 1] = 100000;
-							fullSetSize += 2;
-						}
-					}
-				}
-
-				for (int i = 0; i < openSetSize; i++)
-				{
-					openSet[i] = openSet[i + 2];
-				}
-				openSetSize -= 2;
-			}
-
-			for (int i = 0; i < 15 * 15; i++)
-			{
-				ordersedSet[i] = 100000;
-			}
-
-			for (int i = 0; i < fullSetSize; i += 2)
-			{
-				ordersedSet[fullSet[i]] = fullSet[i + 1];
-			}
-
-			ordersedSet[player.x + player.y * 15] = 0;
-
-			int pathIndex = opponent.x + opponent.y * 15;
-
-			while (pathIndex != player.x + player.y * 15)
-			{
-				int neighbors[4];
-
-				neighbors[0] = currentIndex - 1;
-				neighbors[0] = currentIndex + 1;
-				neighbors[0] = currentIndex - 15;
-				neighbors[0] = currentIndex + 15;
-
-				int lowest[2]{0, 100000};
-				for (size_t i = 0; i < 4; i++)
-				{
-					lowest[0] = i;
-					lowest[1] = ordersedSet[neighbors[i]];
-				}
-
-				pathIndex = neighbors[lowest[0]];
-
-				path[pathSize] = pathIndex;
-
-				pathSize += 1; 
-			}
-			updatePath = false;
-		}
-
-		if (frameCount % 1000 == 0)
-		{
-			opponent.x = path[pathPos] % 15;
-			opponent.y = floor(path[pathPos]/15);
-			opponentRect.setPosition(opponent.x * 40.f, opponent.y * 40.f);
-			pathPos += 1;
-		}
-
-		ventana.draw(playerRect);
-		ventana.draw(opponentRect);
-
-		ventana.display();
-
-		frameCount += 1;
-	}
-	
+	return 0;
 }
 
-//Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
-bool verificar(int num, int arreglo[20]) 
-{
-	for (int i = 0; i < 20; i++)
-	{
-		if (num == arreglo[i]) {
-			return true; //Si el numero ya existe retorna verdadero.
-		}
-	}
-	return false; //Si el numero NO existe retorna falso.
-}
 
