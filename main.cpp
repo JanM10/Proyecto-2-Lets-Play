@@ -53,6 +53,7 @@ public:
 
 };
 
+
 int main()
 {
 	srand(time(NULL)); //Numeros aleatorios
