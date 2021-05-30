@@ -20,9 +20,9 @@ using namespace std;
 //Menu ventana_nueva;
 bool verificar(int num, int arreglo[9]);
 
-void numerosRandom(array<array<int, 21>, 11> matriz);
+void numerosRandom(int matriz[11][21]);
 
-void imprimitMatriz(array<array<int, 21>, 11> matriz);
+void imprimitMatriz(int matriz[11][21]);
 
 
 //////////////////////////////////////////////////////////
@@ -53,28 +53,24 @@ struct cell {
 
 // A Utility Function to check whether given cell (row, col)
 // is a valid cell or not.
-template <size_t ROW, size_t COL>
-bool isValid(const array<array<int, COL>, ROW>& grid,
-	const Pair& point)
+bool isValid(int matriz[11][21], const Pair& point)
 { // Returns true if row number and column number is in
 // range
-	if (ROW > 0 && COL > 0)
-		return (point.first >= 0) && (point.first < ROW)
+	if (21 > 0 && 11 > 0)
+		return (point.first >= 0) && (point.first < 21)
 		&& (point.second >= 0)
-		&& (point.second < COL);
+		&& (point.second < 11);
 
 	return false;
 }
 
 // A Utility Function to check whether the given cell is
 // blocked or not
-template <size_t ROW, size_t COL>
-bool isUnBlocked(const array<array<int, COL>, ROW>& grid,
-	const Pair& point)
+bool isUnBlocked(int matriz[11][21], const Pair& point)
 {
 	// Returns true if the cell is not blocked else false
-	return isValid(grid, point)
-		&& grid[point.first][point.second] == 0;
+	return isValid(matriz, point)
+		&& matriz[point.first][point.second] == 0;
 }
 
 // A Utility Function to check whether destination cell has
@@ -94,10 +90,7 @@ double calculateHValue(const Pair& src, const Pair& dest)
 
 // A Utility Function to trace the path from the source to
 // destination
-template <size_t ROW, size_t COL>
-void tracePath(
-	const array<array<cell, COL>, ROW>& cellDetails,
-	const Pair& dest)
+void tracePath(const array<array<cell, 21>, 11>& cellDetails,const Pair& dest)
 {
 	printf("\nThe Path is ");
 
@@ -124,24 +117,23 @@ void tracePath(
 // A Function to find the shortest path between a given
 // source cell to a destination cell according to A* Search
 // Algorithm
-template <size_t ROW, size_t COL>
-void aStarSearch(const array<array<int, COL>, ROW>& grid, const Pair& src, const Pair& dest)
+void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 {
 	// If the source is out of range
-	if (!isValid(grid, src)) {
+	if (!isValid(matriz, src)) {
 		printf("Source is invalid\n");
 		return;
 	}
 
 	// If the destination is out of range
-	if (!isValid(grid, dest)) {
+	if (!isValid(matriz, dest)) {
 		printf("Destination is invalid\n");
 		return;
 	}
 
 	// Either the source or the destination is blocked
-	if (!isUnBlocked(grid, src)
-		|| !isUnBlocked(grid, dest)) {
+	if (!isUnBlocked(matriz, src)
+		|| !isUnBlocked(matriz, dest)) {
 		printf("Source or the destination is blocked\n");
 		return;
 	}
@@ -155,12 +147,12 @@ void aStarSearch(const array<array<int, COL>, ROW>& grid, const Pair& src, const
 	// Create a closed list and initialise it to false which
 	// means that no cell has been included yet This closed
 	// list is implemented as a boolean 2D array
-	bool closedList[ROW][COL];
+	bool closedList[11][21];
 	memset(closedList, false, sizeof(closedList));
 
 	// Declare a 2D array of structure to hold the details
 	// of that cell
-	array<array<cell, COL>, ROW> cellDetails;
+	array<array<cell, 21>, 11> cellDetails;
 
 	int i, j;
 	// Initialising the parameters of the starting node
@@ -221,7 +213,7 @@ void aStarSearch(const array<array<int, COL>, ROW>& grid, const Pair& src, const
 				Pair neighbour(i + add_x, j + add_y);
 				// Only process this cell if this is a valid
 				// one
-				if (isValid(grid, neighbour)) {
+				if (isValid(matriz, neighbour)) {
 					// If the destination cell is the same
 					// as the current successor
 					if (isDestination(
@@ -242,7 +234,7 @@ void aStarSearch(const array<array<int, COL>, ROW>& grid, const Pair& src, const
 					// ignore it. Else do the following
 					else if (!closedList[neighbour.first]
 						[neighbour.second]
-					&& isUnBlocked(grid,
+					&& isUnBlocked(matriz,
 						neighbour)) {
 						double gNew, hNew, fNew;
 						gNew = cellDetails[i][j].g + 1.0;
@@ -409,8 +401,6 @@ int main()
 	cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
 
 
-
-
 	for (int x = 0; x < 11; x++)
 	{
 		cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
@@ -425,35 +415,47 @@ int main()
 	}
 
 	//0-8   0-18
-	array<array<int, 21>, 11>grid{       //
-		{{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }},
-		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
-		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
-		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
-		{{ 2, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
-		{{ 2, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
-		{{ 2, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
-		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
-		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
-		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
-		{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }}} };
-	//
+	//array<array<int, 21>, 11>grid{     
+	//	{{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }},
+	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+	//	{{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
+	//	{{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
+	//	{{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
+	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+	//	{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }}} };
+
+	int matriz2[11][21]{
+	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
 
 
-	numerosRandom(grid);
+	numerosRandom(matriz2);
 
 	for (int x = 0; x < 11; x++)
 	{
 		for (int y = 0; y < 21; y++)
 		{
-			if (grid[x][y] == 1)
+			if (matriz2[x][y] == 1)
 			{
-				cuadradosCancha[x][y].setFillColor(Color::Magenta);
+				cuadradosCancha[x][y].setFillColor(Color::Blue);
 			}
-			else if (grid[x][y] == 2) {
+			else if (matriz2[x][y] == 2) {
 				cuadradosCancha[x][y].setFillColor(Color::Red);
 			}
-			else if (grid[x][y] == 3) {
+			else if (matriz2[x][y] == 3) {
 				cuadradosCancha[x][y].setFillColor(Color::Black);
 			}
 
@@ -464,9 +466,9 @@ int main()
 	Pair src(1, 4);
 
 	// Destination is the left-most top-most corner
-	Pair dest(21, 1);
+	Pair dest(2, 4);
 
-	aStarSearch(grid, src, dest);
+	aStarSearch(matriz2, src, dest);
 
 	// run the program as long as the window is open
 	while (ventanaPrueba.isOpen())
@@ -497,7 +499,7 @@ int main()
 
 
 //1-9    1-10
-void numerosRandom(array<array<int, 21>, 11> matriz) {
+void numerosRandom(int matriz[11][21]) {
 	srand(time(NULL)); //Numeros aleatorios
 
 	//####################################################################
@@ -556,7 +558,7 @@ void numerosRandom(array<array<int, 21>, 11> matriz) {
 
 }
 
-void imprimitMatriz(array<array<int, 21>, 11> matriz)
+void imprimitMatriz(int matriz[11][21])
 {
 	for (int x = 0; x < 11; x++)
 	{
@@ -579,6 +581,7 @@ bool verificar(int num, int arreglo[9])
 	}
 	return false; //Si el numero NO existe retorna falso.
 }
+
 
 
 
