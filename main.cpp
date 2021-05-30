@@ -16,163 +16,17 @@
 #include <tuple>
 
 using namespace std;
-using namespace sf;
 
 //Menu ventana_nueva;
-//bool verificar(int num, int arreglo[20]);
-//
-//int main()
-//{
-//
-//	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
-//
-//	Menu menu(window.getSize().x, window.getSize().y);
-//
-//	while (window.isOpen())
-//	{
-//		sf::Event event;
-//
-//		while (window.pollEvent(event))
-//		{
-//			switch (event.type)
-//			{
-//			case sf::Event::KeyReleased:
-//				switch (event.key.code)
-//				{
-//				case sf::Keyboard::Up:
-//					menu.MoveUp();
-//					break;
-//
-//				case sf::Keyboard::Down:
-//					menu.MoveDown();
-//					break;
-//
-//				case sf::Keyboard::Return:
-//					switch (menu.GetPressedItem())
-//					{
-//					case 0:
-//						std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
-//						//window.setVisible(false);
-//						window.close();
-//						break;
-//					case 1:
-//						std::cout << "BP Game se esta abriendo" << std::endl;
-//						break;
-//					case 2:
-//						std::cout << "Abriendo las opciones" << std::endl;
-//						break;
-//					case 3:
-//						window.close();
-//						break;
-//					}
-//
-//					break;
-//				}
-//
-//				break;
-//			case sf::Event::Closed:
-//				window.close();
-//
-//				break;
-//
-//			}
-//		}
-//
-//		window.clear();
-//
-//		menu.draw(window);
-//
-//		window.display();
-//	}
-//
-//	/////////////////////////////////////////////////////////////////////
-//	sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
-//	const int chanchaX = 60;
-//	const int chanchaY = 60;
-//	sf::RectangleShape cuadrados(sf::Vector2f(chanchaX, chanchaY));
-//
-//	const int tamanoCancha = 22;
-//
-//	vector<vector<RectangleShape>> cuadradosCancha;
-//
-//	cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
-//
-//	srand(time(NULL)); //Numeros aleatorios
-//	int arreglo[20], num = 5;
-//
-//	//Para que no se repitan los numeros en el arreglo
-//
-//	for (int i = 0; i < 10; i++)
-//	{
-//		while (verificar(num, arreglo)) {
-//
-//			num = rand() % (10);
-//		}
-//
-//		arreglo[i] = num;
-//	}
-//
-//	for (int i = 0; i < 4; i++)
-//	{
-//		cout << arreglo[i] << " ";
-//	}
-//
-//
-//	for (int x = 0; x < 21; x++)
-//	{
-//		cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
-//		for (int y = 0; y < 11; y++)
-//		{
-//			cuadradosCancha[x][y].setSize(sf::Vector2f(chanchaX, chanchaY));
-//			cuadradosCancha[x][y].setFillColor(Color::Green);
-//			cuadradosCancha[x][y].setOutlineThickness(3.0f);
-//			cuadradosCancha[x][y].setOutlineColor(Color::Black);
-//			cuadradosCancha[x][y].setPosition((x+1) * chanchaX, (y+1) * chanchaY);
-//		}
-//	}
-//
-//
-//	// run the program as long as the window is open
-//	while (ventanaPrueba.isOpen())
-//	{
-//		// check all the window's events that were triggered since the last iteration of the loop
-//		sf::Event event;
-//		while (ventanaPrueba.pollEvent(event))
-//		{
-//			// "close requested" event: we close the window
-//			if (event.type == sf::Event::Closed)
-//				ventanaPrueba.close();
-//
-//			ventanaPrueba.clear(sf::Color(0, 255, 255));
-//
-//			for (int x = 0; x < 21; x++)
-//			{
-//				for (int y = 0; y < 11; y++)
-//				{
-//					ventanaPrueba.draw(cuadradosCancha[x][y]);
-//				}
-//			}
-//
-//			ventanaPrueba.display();
-//		}
-//	}
-//
-//}
-//
-////Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
-//bool verificar(int num, int arreglo[20]) 
-//{
-//	for (int i = 0; i < 20; i++)
-//	{
-//		if (num == arreglo[i]) {
-//			return true; //Si el numero ya existe retorna verdadero.
-//		}
-//	}
-//	return false; //Si el numero NO existe retorna falso.
-//}
+bool verificar(int num, int arreglo[9]);
+
+void numerosRandom(array<array<int, 21>, 11> matriz);
+
+void imprimitMatriz(array<array<int, 21>, 11> matriz);
+
 
 //////////////////////////////////////////////////////////
-
+/////////////////////////////////////////////////////////
 // A C++ Program to implement A* Search Algorithm
 
 
@@ -180,7 +34,7 @@ using namespace sf;
 // Creating a shortcut for int, int pair type
 typedef pair<int, int> Pair;
 // Creating a shortcut for tuple<int, int, int> type
-typedef tuple<double, int, int> Tuple;
+typedef tuple<double, int, int> Tuple; 
 
 // A structure to hold the neccesary parameters
 struct cell {
@@ -220,7 +74,7 @@ bool isUnBlocked(const array<array<int, COL>, ROW>& grid,
 {
 	// Returns true if the cell is not blocked else false
 	return isValid(grid, point)
-		&& grid[point.first][point.second] == 1;
+		&& grid[point.first][point.second] == 0;
 }
 
 // A Utility Function to check whether destination cell has
@@ -271,8 +125,7 @@ void tracePath(
 // source cell to a destination cell according to A* Search
 // Algorithm
 template <size_t ROW, size_t COL>
-void aStarSearch(const array<array<int, COL>, ROW>& grid,
-	const Pair& src, const Pair& dest)
+void aStarSearch(const array<array<int, COL>, ROW>& grid, const Pair& src, const Pair& dest)
 {
 	// If the source is out of range
 	if (!isValid(grid, src)) {
@@ -452,33 +305,280 @@ void aStarSearch(const array<array<int, COL>, ROW>& grid,
 	printf("Failed to find the Destination Cell\n");
 }
 
-// Driver program to test above function
+//// Driver program to test above function
+//int main()
+//{
+//	/* Description of the Grid-
+//	1--> The cell is not blocked
+//	0--> The cell is blocked */
+//	array<array<int, 10>, 9> grid{
+//		{ { { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
+//		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 } },
+//		{ { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 } },
+//		{ { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 } },
+//		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 } },
+//		{ { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 } },
+//		{ { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 } },
+//		{ { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
+//		{ { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 } } }
+//	};
+//
+//	// Source is the left-most bottom-most corner
+//	Pair src(8, 0);
+//
+//	// Destination is the left-most top-most corner
+//	Pair dest(2, 2);
+//
+//	aStarSearch(grid, src, dest);
+//
+//	return 0;
+//}
+
 int main()
 {
-	/* Description of the Grid-
-	1--> The cell is not blocked
-	0--> The cell is blocked */
-	array<array<int, 10>, 9> grid{
-		{ { { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
-		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 } },
-		{ { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 } },
-		{ { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 } },
-		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 } },
-		{ { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 } },
-		{ { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 } },
-		{ { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
-		{ { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 } } }
-	};
 
-	// Source is the left-most bottom-most corner
-	Pair src(8, 0);
+	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
+
+	Menu menu(window.getSize().x, window.getSize().y);
+
+	while (window.isOpen())
+	{
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::KeyReleased:
+				switch (event.key.code)
+				{
+				case sf::Keyboard::Up:
+					menu.MoveUp();
+					break;
+
+				case sf::Keyboard::Down:
+					menu.MoveDown();
+					break;
+
+				case sf::Keyboard::Return:
+					switch (menu.GetPressedItem())
+					{
+					case 0:
+						std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
+						window.close();
+						break;
+					case 1:
+						std::cout << "BP Game se esta abriendo" << std::endl;
+						break;
+					case 2:
+						std::cout << "Abriendo las opciones" << std::endl;
+						break;
+					case 3:
+						window.close();
+						break;
+					}
+
+					break;
+				}
+
+				break;
+			case sf::Event::Closed:
+				window.close();
+
+				break;
+
+			}
+		}
+
+		window.clear();
+
+		menu.draw(window);
+
+		window.display();
+	}
+
+	/////////////////////////////////////////////////////////////////////
+	sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
+	const int chanchaDim = 60; //Dimensiones de la cancha
+	sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
+
+	const int tamanoCancha = 22;
+
+	vector<vector<RectangleShape>> cuadradosCancha;
+
+	cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
+
+
+
+
+	for (int x = 0; x < 11; x++)
+	{
+		cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
+		for (int y = 0; y < 21; y++)
+		{
+			cuadradosCancha[x][y].setSize(sf::Vector2f(chanchaDim, chanchaDim));
+			cuadradosCancha[x][y].setFillColor(Color::Green);
+			cuadradosCancha[x][y].setOutlineThickness(3.0f);
+			cuadradosCancha[x][y].setOutlineColor(Color::Black);
+			cuadradosCancha[x][y].setPosition((y + 1) * chanchaDim, (x + 1) * chanchaDim);
+		}
+	}
+
+	//0-8   0-18
+	array<array<int, 21>, 11>grid{       //
+		{{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }},
+		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+		{{ 2, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
+		{{ 2, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
+		{{ 2, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }},
+		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+		{{ 1, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
+		{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }}} };
+	//
+
+
+	numerosRandom(grid);
+
+	for (int x = 0; x < 11; x++)
+	{
+		for (int y = 0; y < 21; y++)
+		{
+			if (grid[x][y] == 1)
+			{
+				cuadradosCancha[x][y].setFillColor(Color::Magenta);
+			}
+			else if (grid[x][y] == 2) {
+				cuadradosCancha[x][y].setFillColor(Color::Red);
+			}
+			else if (grid[x][y] == 3) {
+				cuadradosCancha[x][y].setFillColor(Color::Black);
+			}
+
+		}
+
+	}
+
+	Pair src(1, 4);
 
 	// Destination is the left-most top-most corner
-	Pair dest(2, 2);
+	Pair dest(21, 1);
 
 	aStarSearch(grid, src, dest);
 
-	return 0;
+	// run the program as long as the window is open
+	while (ventanaPrueba.isOpen())
+	{
+		// check all the window's events that were triggered since the last iteration of the loop
+		sf::Event event;
+		while (ventanaPrueba.pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+				ventanaPrueba.close();
+
+			ventanaPrueba.clear(sf::Color(255, 255, 255));
+
+			for (int x = 0; x < 11; x++)
+			{
+				for (int y = 0; y < 21; y++)
+				{
+					ventanaPrueba.draw(cuadradosCancha[x][y]);
+				}
+			}
+
+			ventanaPrueba.display();
+		}
+	}
+
 }
+
+
+//1-9    1-10
+void numerosRandom(array<array<int, 21>, 11> matriz) {
+	srand(time(NULL)); //Numeros aleatorios
+
+	//####################################################################
+	//Cambiar el nueve por el numero random que pida el profe de obstaculos
+	//####################################################################
+	int filas[9], columnas[9], num = 1;
+	int cantObs = 9;//Cantidad de obstaculos
+
+	for (int i = 9; i > abs(cantObs-9); i--)
+	{
+		filas[i-1] = 0;
+		columnas[i-1] = 0;
+	}
+
+	//####################################################################
+	//Cambiar el nueve por el numero random que pida el profe de obstaculos
+	//####################################################################
+	//Para que no se repitan los numeros de filas
+	for (int i = 0; i < cantObs; i++)
+	{
+		while (verificar(num, filas) && num != 0) {
+
+			num = 1 + rand() % (9);
+			
+		}
+		filas[i] = num;
+	}
+
+
+	//####################################################################
+	//Cambiar el nueve por el numero random que pida el profe de obstaculos
+	//####################################################################
+	//Para que no se repitan los numeros de columnas
+	for (int i = 0; i < cantObs; i++)
+	{
+		while (verificar(num, columnas) && num != 0) {
+
+			num = 1 + rand() % (9);
+		}
+		columnas[i] = num;
+	}
+
+
+	//####################################################################
+	//Cambiar el nueve por el numero random que pida el profe de obstaculos
+	//####################################################################
+	// 20-#columna
+	for (int x = 0; x < 9; x++)
+	{
+		matriz[filas[x]][columnas[x]] = 1;
+		matriz[filas[x]][20-columnas[x]] = 1;
+	}
+
+
+	imprimitMatriz(matriz);
+
+}
+
+void imprimitMatriz(array<array<int, 21>, 11> matriz)
+{
+	for (int x = 0; x < 11; x++)
+	{
+		for (int y = 0; y < 21; y++)
+		{
+			cout << matriz[x][y] << " ";
+		}
+		cout << endl;
+	}
+}
+
+//Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
+bool verificar(int num, int arreglo[9])
+{
+	for (int i = 0; i < 9; i++)
+	{
+		if (num == arreglo[i]) {
+			return true; //Si el numero ya existe retorna verdadero.
+		}
+	}
+	return false; //Si el numero NO existe retorna falso.
+}
+
 
 
