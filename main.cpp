@@ -56,10 +56,8 @@ struct cell {
 bool isValid(int matriz[11][21], const Pair& point)
 { // Returns true if row number and column number is in
 // range
-	if (21 > 0 && 11 > 0)
-		return (point.first >= 0) && (point.first < 21)
-		&& (point.second >= 0)
-		&& (point.second < 11);
+	if (11 > 0 && 21 > 0)
+		return (point.first >= 0) && (point.first < 11) && (point.second >= 0) && (point.second < 21);
 
 	return false;
 }
@@ -69,8 +67,7 @@ bool isValid(int matriz[11][21], const Pair& point)
 bool isUnBlocked(int matriz[11][21], const Pair& point)
 {
 	// Returns true if the cell is not blocked else false
-	return isValid(matriz, point)
-		&& matriz[point.first][point.second] == 0;
+	return isValid(matriz, point) && matriz[point.first][point.second] == 0;
 }
 
 // A Utility Function to check whether destination cell has
@@ -90,14 +87,15 @@ double calculateHValue(const Pair& src, const Pair& dest)
 
 // A Utility Function to trace the path from the source to
 // destination
-void tracePath(const array<array<cell, 21>, 11>& cellDetails,const Pair& dest)
+void tracePath(const array<array<cell, 21>, 11>& cellDetails, const Pair& dest, int matriz[11][21])
 {
 	printf("\nThe Path is ");
 
 	stack<Pair> Path;
 
-	int row = dest.second;
+	int row = dest.first;
 	int col = dest.second;
+	matriz[row][col] = 4;
 	Pair next_node = cellDetails[row][col].parent;
 	do {
 		Path.push(next_node);
@@ -110,7 +108,10 @@ void tracePath(const array<array<cell, 21>, 11>& cellDetails,const Pair& dest)
 	while (!Path.empty()) {
 		Pair p = Path.top();
 		Path.pop();
+		cout << "MATRIZ: " << matriz[p.first][p.second] << endl;
+		matriz[p.first][p.second] = 4;
 		printf("-> (%d,%d) ", p.first, p.second);
+		
 	}
 }
 
@@ -226,7 +227,7 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 							= { i, j };
 						printf("The destination cell is "
 							"found\n");
-						tracePath(cellDetails, dest);
+						tracePath(cellDetails, dest, matriz);
 						return;
 					}
 					// If the successor is already on the
@@ -400,7 +401,6 @@ int main()
 
 	cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
 
-
 	for (int x = 0; x < 11; x++)
 	{
 		cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
@@ -428,47 +428,52 @@ int main()
 	//	{{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }},
 	//	{{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }}} };
 
-	int matriz2[11][21]{
+	int cuadrosCancha2[11][21]{
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
-	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
-	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+	{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
 
 
-	numerosRandom(matriz2);
+	numerosRandom(cuadrosCancha2);
+
+	Pair src(1, 4);
+
+	// Destination is the left-most top-most corner
+	Pair dest(6, 19);
+
+	aStarSearch(cuadrosCancha2, src, dest);
 
 	for (int x = 0; x < 11; x++)
 	{
 		for (int y = 0; y < 21; y++)
 		{
-			if (matriz2[x][y] == 1)
+			if (cuadrosCancha2[x][y] == 1)
 			{
 				cuadradosCancha[x][y].setFillColor(Color::Blue);
 			}
-			else if (matriz2[x][y] == 2) {
+			else if (cuadrosCancha2[x][y] == 2) {
 				cuadradosCancha[x][y].setFillColor(Color::Red);
 			}
-			else if (matriz2[x][y] == 3) {
+			else if (cuadrosCancha2[x][y] == 3) {
 				cuadradosCancha[x][y].setFillColor(Color::Black);
+			}
+			else if (cuadrosCancha2[x][y] == 4){
+				cuadradosCancha[x][y].setFillColor(Color::White);
 			}
 
 		}
 
 	}
 
-	Pair src(1, 4);
 
-	// Destination is the left-most top-most corner
-	Pair dest(2, 4);
-
-	aStarSearch(matriz2, src, dest);
 
 	// run the program as long as the window is open
 	while (ventanaPrueba.isOpen())
