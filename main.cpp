@@ -14,6 +14,7 @@
 #include <set>
 #include <stack>
 #include <tuple>
+#include <string>
 
 using namespace std;
 
@@ -23,6 +24,9 @@ bool verificar(int num, int arreglo[9]);
 void numerosRandom(int matriz[11][21]);
 
 void imprimitMatriz(int matriz[11][21]);
+
+
+int cantObs = 9;//Cantidad de obstaculos
 
 
 //////////////////////////////////////////////////////////
@@ -133,94 +137,68 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 	}
 
 	// Either the source or the destination is blocked
-	if (!isUnBlocked(matriz, src)
-		|| !isUnBlocked(matriz, dest)) {
-		printf("Source or the destination is blocked\n");
+	//
+	if (!isUnBlocked(matriz, src) || !isUnBlocked(matriz, dest)) {
+		printf("El \n");
 		return;
 	}
 
-	// If the destination cell is the same as source cell
+	//Si el destino es el mismo que el inicio
 	if (isDestination(src, dest)) {
-		printf("We are already at the destination\n");
+		printf("Este ya es el destino\n");
 		return;
 	}
 
-	// Create a closed list and initialise it to false which
-	// means that no cell has been included yet This closed
-	// list is implemented as a boolean 2D array
+	//Se crea la lista cerrada y se inizializa como falsa ya que ninguna celda se ha incluido
 	bool closedList[11][21];
 	memset(closedList, false, sizeof(closedList));
 
-	// Declare a 2D array of structure to hold the details
-	// of that cell
+	//El arreglo contiene informacion acerca de las celdas
 	array<array<cell, 21>, 11> cellDetails;
 
 	int i, j;
-	// Initialising the parameters of the starting node
+	// Se inizializan los parametros de los nodos
 	i = src.first, j = src.second;
 	cellDetails[i][j].f = 0.0;
 	cellDetails[i][j].g = 0.0;
 	cellDetails[i][j].h = 0.0;
 	cellDetails[i][j].parent = { i, j };
 
-	/*
-	Create an open list having information as-
-	<f, <i, j>>
-	where f = g + h,
-	and i, j are the row and column index of that cell
-	Note that 0 <= i <= ROW-1 & 0 <= j <= COL-1
-	This open list is implenented as a set of tuple.*/
-	std::priority_queue<Tuple, std::vector<Tuple>,
-		std::greater<Tuple> >
-		openList;
+	//Se crea una lista abierta en donde van a ir las celdas que se van a visitar o que se esta visitando en el momento
+	priority_queue<Tuple, vector<Tuple>,greater<Tuple> >openList;
 
-	// Put the starting cell on the open list and set its
-	// 'f' as 0
+	//Se agrega la celda inicial en la lista abierta y se declara como f = 0
 	openList.emplace(0.0, i, j);
 
-	// We set this boolean value as false as initially
-	// the destination is not reached.
+	
 	while (!openList.empty()) {
 		const Tuple& p = openList.top();
 		// Add this vertex to the closed list
-		i = get<1>(p); // second element of tupla
-		j = get<2>(p); // third element of tupla
+		i = get<1>(p); // Segundo elemento de la tupla
+		j = get<2>(p); // Tercer elemento de la tupla
 
-		// Remove this vertex from the open list
+
 		openList.pop();
 		closedList[i][j] = true;
 		/*
-				Generating all the 8 successor of this cell
-						N.W N N.E
-						\ | /
-						\ | /
-						W----Cell----E
-								/ | \
-						/ | \
-						S.W S S.E
-
-				Cell-->Popped Cell (i, j)
-				N --> North	 (i-1, j)
-				S --> South	 (i+1, j)
-				E --> East	 (i, j+1)
-				W --> West		 (i, j-1)
-				N.E--> North-East (i-1, j+1)
-				N.W--> North-West (i-1, j-1)
-				S.E--> South-East (i+1, j+1)
-				S.W--> South-West (i+1, j-1)
+				Norte	 (i-1, j)
+				Sur	 (i+1, j)
+				Este	 (i, j+1)
+				Oeste		 (i, j-1)
+				Noreste (i-1, j+1)
+				Noroeste (i-1, j-1)
+				Sureste (i+1, j+1)
+				Suroeste (i+1, j-1)
 		*/
 		for (int add_x = -1; add_x <= 1; add_x++) {
 			for (int add_y = -1; add_y <= 1; add_y++) {
 				Pair neighbour(i + add_x, j + add_y);
-				// Only process this cell if this is a valid
-				// one
+
 				if (isValid(matriz, neighbour)) {
-					// If the destination cell is the same
-					// as the current successor
+					//Si el destino es la misla celda que el el actual sucesor
 					if (isDestination(
 						neighbour,
-						dest)) { // Set the Parent of
-								// the destination cell
+						dest)) { // Se convierte en el partent de la celda del destino
 						cellDetails[neighbour.first]
 							[neighbour.second]
 						.parent
@@ -230,9 +208,10 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 						tracePath(cellDetails, dest, matriz);
 						return;
 					}
-					// If the successor is already on the
-					// closed list or if it is blocked, then
-					// ignore it. Else do the following
+
+					//Si el sucesor ya esta en la lista cerrada
+					//o el lugar esta bloqueado se ignora y
+					//se ejecuta lo siguente
 					else if (!closedList[neighbour.first]
 						[neighbour.second]
 					&& isUnBlocked(matriz,
@@ -243,16 +222,9 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 							dest);
 						fNew = gNew + hNew;
 
-						// If it isn’t on the open list, add
-						// it to the open list. Make the
-						// current square the parent of this
-						// square. Record the f, g, and h
-						// costs of the square cell
-						//			 OR
-						// If it is on the open list
-						// already, check to see if this
-						// path to that square is better,
-						// using 'f' cost as the measure.
+						// Si no se encuentra en la lista abierta
+						// se agrega a la lista. Convierte el cuadro actual
+						// en el parent.
 						if (cellDetails[neighbour.first]
 							[neighbour.second]
 						.f
@@ -265,8 +237,6 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 								fNew, neighbour.first,
 								neighbour.second);
 
-							// Update the details of this
-							// cell
 							cellDetails[neighbour.first]
 								[neighbour.second]
 							.g
@@ -290,47 +260,46 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 		}
 	}
 
-	// When the destination cell is not found and the open
-	// list is empty, then we conclude that we failed to
-	// reach the destiantion cell. This may happen when the
-	// there is no way to destination cell (due to
-	// blockages)
-	printf("Failed to find the Destination Cell\n");
-}
 
-//// Driver program to test above function
-//int main()
-//{
-//	/* Description of the Grid-
-//	1--> The cell is not blocked
-//	0--> The cell is blocked */
-//	array<array<int, 10>, 9> grid{
-//		{ { { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
-//		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 1 } },
-//		{ { 1, 1, 1, 0, 1, 1, 0, 1, 0, 1 } },
-//		{ { 0, 0, 1, 0, 1, 0, 0, 0, 0, 1 } },
-//		{ { 1, 1, 1, 0, 1, 1, 1, 0, 1, 0 } },
-//		{ { 1, 0, 1, 1, 1, 1, 0, 1, 0, 0 } },
-//		{ { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 } },
-//		{ { 1, 0, 1, 1, 1, 1, 0, 1, 1, 1 } },
-//		{ { 1, 1, 1, 0, 0, 0, 1, 0, 0, 1 } } }
-//	};
-//
-//	// Source is the left-most bottom-most corner
-//	Pair src(8, 0);
-//
-//	// Destination is the left-most top-most corner
-//	Pair dest(2, 2);
-//
-//	aStarSearch(grid, src, dest);
-//
-//	return 0;
-//}
+	printf("No se encontro la celda\n");
+}
 
 int main()
 {
+	sf::RenderWindow obstaculos(sf::VideoMode(800, 600), "Cauantos Obstaculos");
+
+	sf::String playerInput;
+	sf::Text playerText;
+
+	// run the program as long as the window is open
+	while (obstaculos.isOpen())
+	{
+		// check all the window's events that were triggered since the last iteration of the loop
+		sf::Event event;
+		while (obstaculos.pollEvent(event))
+		{
+			// "close requested" event: we close the window
+			if (event.type == sf::Event::Closed)
+				obstaculos.close();
+
+			if (event.type == sf::Event::TextEntered)
+			{
+				playerInput += event.text.unicode;
+				playerText.setString(playerInput);
+			}
+
+
+			//obstaculos.display();
+		}
+		
+		obstaculos.clear();
+		obstaculos.draw(playerText);
+		obstaculos.display();
+	}
+
 
 	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
+
 
 	Menu menu(window.getSize().x, window.getSize().y);
 
@@ -444,10 +413,10 @@ int main()
 
 	numerosRandom(cuadrosCancha2);
 
-	Pair src(1, 4);
+	Pair src(5, 10);
 
 	// Destination is the left-most top-most corner
-	Pair dest(6, 19);
+	Pair dest(5, 19);
 
 	aStarSearch(cuadrosCancha2, src, dest);
 
@@ -511,7 +480,6 @@ void numerosRandom(int matriz[11][21]) {
 	//Cambiar el nueve por el numero random que pida el profe de obstaculos
 	//####################################################################
 	int filas[9], columnas[9], num = 1;
-	int cantObs = 9;//Cantidad de obstaculos
 
 	for (int i = 9; i > abs(cantObs-9); i--)
 	{
@@ -575,6 +543,7 @@ void imprimitMatriz(int matriz[11][21])
 	}
 }
 
+
 //Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
 bool verificar(int num, int arreglo[9])
 {
@@ -586,7 +555,3 @@ bool verificar(int num, int arreglo[9])
 	}
 	return false; //Si el numero NO existe retorna falso.
 }
-
-
-
-
