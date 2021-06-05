@@ -146,7 +146,6 @@ int main()
 				if (e.mouseButton.button == sf::Mouse::Left) {
 
 					world.setDraggedVelocity(line[1].position.x, line[1].position.y);
-
 					dragging = false;
 				}
 				break;
@@ -174,11 +173,12 @@ int main()
 }
 
 //Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
-bool verificar(int num, int arreglo[20]) 
+bool verificar(int num, int arreglo[20])
 {
 	for (int i = 0; i < 20; i++)
 	{
-		if (num == arreglo[i]) {
+		if (num == arreglo[i])
+			{
 			return true; //Si el numero ya existe retorna verdadero.
 		}
 	}
