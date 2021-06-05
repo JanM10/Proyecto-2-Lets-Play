@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <unordered_set>
 
 #include "Menu.h"
 
@@ -15,6 +16,10 @@
 #include <stack>
 #include <tuple>
 #include <string>
+
+#include "Backtracking.h"
+
+Backtracking BT;
 
 using namespace std;
 
@@ -30,11 +35,8 @@ bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 int cantObs = 9;//Cantidad de obstaculos
 
 
-//////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////
 // A C++ Program to implement A* Search Algorithm
-
-
 
 // Creating a shortcut for int, int pair type
 typedef pair<int, int> Pair;
@@ -266,8 +268,6 @@ void aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 int main()
 {
 
-
-
 	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
 	Menu menu(window.getSize().x, window.getSize().y);
 
@@ -385,7 +385,7 @@ int main()
 		}
 
 
-		int cuadrosCancha2[11][21]{
+		int cuadrosCancha2[11][21]{ 
 		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 },
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
@@ -397,7 +397,6 @@ int main()
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
 		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } };
-
 
 		numerosRandom(cuadrosCancha2);
 
@@ -415,7 +414,7 @@ int main()
 			{
 				if (cuadrosCancha2[x][y] == 1)
 				{
-					cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los bordes del mapa 
+					cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los obstaculos del mapa 
 				}
 				else if (cuadrosCancha2[x][y] == 2) {
 					cuadradosCancha[x][y].setFillColor(Color::Red);//El rojo muestra las porterias
@@ -520,6 +519,21 @@ void imprimitMatriz(int matriz[11][21])
 		cout << endl;
 	}
 }
+
+
+////19*(#fila) --->Ej: (2,11): 19*1+11= 19+11 = 30    19*(#Fila-1 + #Columna)
+////19*(#fila) --->Ej: (3,19): 19*2+19= 38+19 = 57
+////19*(#fila) --->Ej: (7,14): 19*6+14=  = 30
+////1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//1
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},//2
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},//3
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//4
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//5
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//6
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},//7
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//8
+//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//9
 
 
 //Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
