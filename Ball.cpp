@@ -18,7 +18,7 @@ void Ball::update(float deltatime) {
 		setVelocity(-getVelocity().x, getVelocity().y);
 	}
 	else if (getPosition().x > 1400 - getRadius()) {
-		setPosition(1000 - getRadius(), getPosition().y);
+		setPosition(1400 - getRadius(), getPosition().y);
 		setVelocity(-getVelocity().x, getVelocity().y);
 	}
 
@@ -27,7 +27,7 @@ void Ball::update(float deltatime) {
 		setVelocity(getVelocity().x, -getVelocity().y);
 	}
 	else if (getPosition().y > 800 - getRadius()) {
-		setPosition(getPosition().x, 600 - getRadius());
+		setPosition(getPosition().x, 800 - getRadius());
 		setVelocity(getVelocity().x, -getVelocity().y);
 	}
 }
