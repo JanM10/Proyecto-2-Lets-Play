@@ -6,13 +6,12 @@ class Backtracking
 {
 public:
 
-	void imprimirSol(int resultado[4][4]);
+	void imprimirSol(int resultado[11][21]);
 
-	bool espacioValido(int matriz[4][4], int Xini, int Yini, int Xfin, int Yfin);
+	bool espacioValido(int matriz[11][21], int Xini, int Yini, int Xfin, int Yfin);
 
-	bool hallarCamino(int matriz[4][4], int Xini, int Yini, int Xfin, int Yfin, int resultado[4][4]);
+	bool hallarCamino(int matriz[11][21], int Xini, int Yini, int Xfin, int Yfin, int resultado[11][21]);
 
-	void limpiarMatriz(int resultado[4][4]);
 };
 
 

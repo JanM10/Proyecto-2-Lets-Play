@@ -18,6 +18,7 @@
 #include "Backtracking.h"
 #include "Pathfinding.h"
 
+//Instancias de las clases Backtracking y Pathfinding
 Backtracking BT;
 Pathfinding PF;
 
@@ -30,18 +31,47 @@ void numerosRandom(int matriz[11][21]);
 
 void imprimitMatriz(int matriz[11][21]);
 
+void limpiarMatriz(int resultado[11][21]);
+
+void asignarColores(int matriz[11][21]);
+
+void mostrarBT(int resultado[11][21], int matriz[11][21]);
+
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
 int cantObs = 9;//Cantidad de obstaculos
+
+int resultado[11][21]{
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
+
+int colores[11][21]{
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
 
 // Creating a shortcut for int, int pair type
 typedef pair<int, int> Pair;
 // Creating a shortcut for tuple<int, int, int> type
 typedef tuple<double, int, int> Tuple;
-
-
-
 
 
 int main()
@@ -116,6 +146,7 @@ int main()
 		sf::String playerInput;
 		sf::Text playerText;
 
+		///////////////////////////////////////////////////////////////////////
 		//El programa sigue corriendo siemrpre y cuando la ventana este abierta
 		while (obstaculos.isOpen())
 		{
@@ -138,6 +169,7 @@ int main()
 			obstaculos.draw(playerText);
 			obstaculos.display();
 		}
+		/////////////////////////////////////////////////////////////////////
 
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
 		const int chanchaDim = 60; //Dimensiones de la cancha
@@ -163,7 +195,7 @@ int main()
 			}
 		}
 
-
+		//Matriz de la cancha, cada numero representa algo a la hora de imprimirse
 		int cuadrosCancha2[11][21]{ 
 		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 },
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
@@ -179,13 +211,19 @@ int main()
 
 		numerosRandom(cuadrosCancha2);
 
-		//Src(source) es el inicio del pathfinding
-		Pair src(5, 10);
+		asignarColores(cuadrosCancha2);
 
-		//Dest muestra el destino del pathfinding
-		Pair dest(5, 19);
+		////Src(source) es el inicio del pathfinding
+		//Pair src(5, 10);
 
-		PF.aStarSearch(cuadrosCancha2, src, dest);
+		////Dest muestra el destino del pathfinding
+		//Pair dest(5, 19);
+
+		//PF.aStarSearch(cuadrosCancha2, src, dest);
+
+		BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
+
+		mostrarBT(resultado, cuadrosCancha2);
 
 		for (int x = 0; x < 11; x++)
 		{
@@ -300,21 +338,6 @@ void imprimitMatriz(int matriz[11][21])
 }
 
 
-////19*(#fila) --->Ej: (2,11): 19*1+11= 19+11 = 30    19*(#Fila-1 + #Columna)
-////19*(#fila) --->Ej: (3,19): 19*2+19= 38+19 = 57
-////19*(#fila) --->Ej: (7,14): 19*6+14=  = 30
-////1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//1
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0},//2
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},//3
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//4
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//5
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//6
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0},//7
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//8
-//{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},//9
-
-
 //Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
 bool verificar(int num, int arreglo[9])
 {
@@ -326,3 +349,43 @@ bool verificar(int num, int arreglo[9])
 	}
 	return false; //Si el numero NO existe retorna falso.
 }
+
+//Limpia la ruta del resultado para que se pueda volver a usar
+void limpiarMatriz(int resultado[11][21])
+{
+	for (int i = 0; i < 11; i++)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			resultado[i][j] = 1;
+		}
+	}
+	imprimitMatriz(resultado);
+}
+
+void asignarColores(int matriz[11][21])
+{
+	for (int i = 0; i < 11; i++)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			colores[i][j] = matriz[i][j];
+		}
+	}
+	//imprimitMatriz(colores);
+}
+
+void mostrarBT(int resultado[11][21], int matriz[11][21])
+{
+	for (int i = 0; i < 11; i++)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			if (resultado[i][j] == 0)
+			{
+				matriz[i][j] = 4;
+			}
+		}
+	}
+}
+
