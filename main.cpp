@@ -3,6 +3,11 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "Ball.h"
+#include "WorldRenderer.h"
+#include <vector>
+#include "World.h"
+
 #include "Menu.h"
 
 using namespace std;
@@ -10,57 +15,16 @@ using namespace sf;
 
 //Menu ventana_nueva;
 bool verificar(int num, int arreglo[20]);
-Vector2f v_przesun(-5, 0); //Vector que se va a usar para mover la bola
 
 /// <summary>
 /// Esta clase se encarga de crear la pelota para jugar
 /// Tambien se encarga de las fisicas detras de la misma
 /// </summary>
-class Pilka :public CircleShape //Se crea la clase de la pelota
-{
-public:
 
-    Pilka(float r = 50) :CircleShape(r) //Se deciden los parametros del balon
-    {
-        this->setOrigin(r, r);
-        this->setPosition(700, 200);
-        this->setFillColor(Color(56, 200, 210));
-    }
-
-    void przesun()
-    {
-        if (this->getPosition().x <= 50 || this->getPosition().x >= 1400) //Se deciden los bordes de la ventana donde debe rebotar
-        {
-            v_przesun.x *= -1;
-        }
-        if (this->getPosition().y <= 50 || this->getPosition().y >= 800)
-        {
-            v_przesun.y *= -1;
-        }
-        this->move(v_przesun);
-        
-    }
-
-
-
-};
-class Bola :public CircleShape
-{
-public:
-
-    Bola(float r = 50) :CircleShape(r)
-    {
-        this->setOrigin(r, r);
-        this->setPosition(350, 200);
-        this->setFillColor(Color(255, 0, 0));
-    }
-
-
-};
 
 int main()
 {
-	srand(time(NULL)); //Numeros aleatorios
+	srand((unsigned)(time(NULL))); //Numeros aleatorios
 	int arreglo[20], num = 0;
 
 	//Para que no se repitan los numeros en el arreglo
@@ -143,246 +107,70 @@ int main()
 
     sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP Game"); //Ventana donde se encuentra BP Game
     ventana.setFramerateLimit(120);
-    int klatki = 0;
-    int fuerza = 0;
-    Pilka pilka; //Se crea la pelota
-    Bola bola;
+
+	World world;
+	WorldRenderer worldRenderer(world);
+
+	sf::Vertex line [] = { sf::Vertex(sf::Vector2f(-1, -1)), sf::Vertex(sf::Vector2f(-1, -1)) };
+
+	bool dragging = false;
+
+	float deltatime = 0.f;
+	sf::Clock clock;
 
     Event e;
 
     while (ventana.isOpen())
     {
-        while (ventana.pollEvent(e))
-        {
-            if (e.type == Event::Closed || (Keyboard::isKeyPressed(Keyboard::Escape))) //Cerrar la ventana con la tecla Escape
-                ventana.close();
+		deltatime = clock.restart().asSeconds();
 
-            if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Left) //Aqui se decide como la pelota se mueve segun la posicion del mouse
-            {
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //Esquina superior izquierda
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 18)
-                {
-                    v_przesun.x = 5;
-                    v_przesun.y = 5;
-                }
+		while (ventana.pollEvent(e))
+		{
+			switch (e.type) {
+			case sf::Event::Closed:
+				ventana.close();
+				break;
 
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 33 &&  //Arriba
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 33 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 18)
-                {
-                    v_przesun.x = 0;
-                    v_przesun.y = 5;
-                }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 34 &&  //Esquina superior derecha
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 50 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 50 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y - 17)
-                {
-                    v_przesun.x = -5;
-                    v_przesun.y = 5;
-                }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //Izquierda
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 17)
-                {
-                    v_przesun.x = 5;
-                    v_przesun.y = 0;
-                }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 18 &&  //Derecha
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 50 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y - 17 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 18)
-                {
-                    v_przesun.x = -5;
-                    v_przesun.y = 0;
-                }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 17 &&  //Abajo
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 17 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
-                {
-                    v_przesun.x = 0;
-                    v_przesun.y = -5;
-                }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x - 50 &&  //Esquina inferior izquierda
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x - 18 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
-                {
-                    v_przesun.x = 5;
-                    v_przesun.y = -5;
-                }
-                if (Mouse::getPosition(ventana).x >= pilka.getPosition().x + 18 &&  //Esquina inferior derecha
-                    Mouse::getPosition(ventana).x <= pilka.getPosition().x + 100 &&
-                    Mouse::getPosition(ventana).y >= pilka.getPosition().y + 18 &&
-                    Mouse::getPosition(ventana).y <= pilka.getPosition().y + 50)
-                {
-                    v_przesun.x = -5;
-                    v_przesun.y = -5;
-                }
-                          
-            }
+			case sf::Event::MouseButtonPressed:
+				if (e.mouseButton.button == sf::Mouse::Left) {
+					sf::Vector2i point = sf::Mouse::getPosition(ventana);
 
-            
-            
-            if (e.type == Event::MouseButtonPressed && e.mouseButton.button == Mouse::Right) //Detener la pelota
-            {
-                v_przesun.x = 0;
-                v_przesun.y = 0;
-            }
+					if (world.dragBall(sf::Vector2f((float)point.x, (float)point.y))) {
+						dragging = true;
+					}
 
-            //        Ambos se mueven                               Solo se mueve en Y                          Solo se mueve en X
-            
-            
-            
+				}
+				break;
 
-            
-        }
-        if (bola.getGlobalBounds().intersects(pilka.getGlobalBounds())) //Aqui se experimenta con el rebote con obstaculos
-        {
-            if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //Esquina superior izquierda
-                bola.getPosition().x <= pilka.getPosition().x - 18 &&
-                bola.getPosition().y >= pilka.getPosition().y - 50 &&
-                bola.getPosition().y <= pilka.getPosition().y - 18)
-            {
-                v_przesun.x = 5;
-                v_przesun.y = 5;
-            }
+			case sf::Event::MouseButtonReleased:
+				if (e.mouseButton.button == sf::Mouse::Left) {
 
-            if (bola.getPosition().x >= pilka.getPosition().x - 33 &&  //Arriba
-                bola.getPosition().x <= pilka.getPosition().x + 33 &&
-                bola.getPosition().y >= pilka.getPosition().y - 50 &&
-                bola.getPosition().y <= pilka.getPosition().y - 18)
-            {
-                v_przesun.x = 0;
-                v_przesun.y = 5;
-            }
-            if (bola.getPosition().x >= pilka.getPosition().x + 34 &&  //Esquina superior derecha
-                bola.getPosition().x <= pilka.getPosition().x + 50 &&
-                bola.getPosition().y >= pilka.getPosition().y - 50 &&
-                bola.getPosition().y <= pilka.getPosition().y - 17)
-            {
-                v_przesun.x = -5;
-                v_przesun.y = 5;
-            }
-            if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //Izquierda
-                bola.getPosition().x <= pilka.getPosition().x - 18 &&
-                bola.getPosition().y >= pilka.getPosition().y - 18 &&
-                bola.getPosition().y <= pilka.getPosition().y + 17)
-            {
-                v_przesun.x = 5;
-                v_przesun.y = 0;
-            }
-            if (bola.getPosition().x >= pilka.getPosition().x + 18 &&  //Derecha
-                bola.getPosition().x <= pilka.getPosition().x + 50 &&
-                bola.getPosition().y >= pilka.getPosition().y - 17 &&
-                bola.getPosition().y <= pilka.getPosition().y + 18)
-            {
-                v_przesun.x = -5;
-                v_przesun.y = 0;
-            }
-            if (bola.getPosition().x >= pilka.getPosition().x - 17 &&  //Abajo
-                bola.getPosition().x <= pilka.getPosition().x + 17 &&
-                bola.getPosition().y >= pilka.getPosition().y + 18 &&
-                bola.getPosition().y <= pilka.getPosition().y + 50)
-            {
-                v_przesun.x = 0;
-                v_przesun.y = -5;
-            }
-            if (bola.getPosition().x >= pilka.getPosition().x - 50 &&  //Esquina inferior izquierda
-                bola.getPosition().x <= pilka.getPosition().x - 18 &&
-                bola.getPosition().y >= pilka.getPosition().y + 18 &&
-                bola.getPosition().y <= pilka.getPosition().y + 50)
-            {
-                v_przesun.x = 5;
-                v_przesun.y = -5;
-            }
-            if (bola.getPosition().x >= pilka.getPosition().x + 18 &&  //Esquina inferior derecha
-                bola.getPosition().x <= pilka.getPosition().x + 100 &&
-                bola.getPosition().y >= pilka.getPosition().y + 18 &&
-                bola.getPosition().y <= pilka.getPosition().y + 50)
-            {
-                v_przesun.x = -5;
-                v_przesun.y = -5;
-            }
-        }
-        
-        
-        fuerza += 1;
-        if (fuerza >= 600) {
-            while ((v_przesun.x != 0 && v_przesun.y != 0) || (v_przesun.x == 0 && v_przesun.y != 0) || (v_przesun.x != 0 && v_przesun.y == 0)) {
+					world.setDraggedVelocity(line[1].position.x, line[1].position.y);
 
-                
-                //        cout << fuerza << endl;
+					dragging = false;
+				}
+				break;
+			}
+		}
+		if (dragging) {
+			sf::Vector2i point = sf::Mouse::getPosition(ventana);
 
-                if (v_przesun.x > 0 && v_przesun.y > 0) { //Ambos positivos
-                    v_przesun.x -= 0.25;
-                    v_przesun.y -= 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x < 0 && v_przesun.y < 0) { // Ambos negativos
-                    v_przesun.x += 0.25;
-                    v_przesun.y += 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x > 0 && v_przesun.y < 0) { //X positivo Y negativo
-                    v_przesun.x -= 0.25;
-                    v_przesun.y += 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x < 0 && v_przesun.y > 0) { //X negativo Y positivo
-                    v_przesun.x += 0.25;
-                    v_przesun.y -= 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x > 0 && v_przesun.y == 0) { //Derecha
-                    v_przesun.x -= 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x < 0 && v_przesun.y == 0) { // Izquierda
-                    v_przesun.x += 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x == 0 && v_przesun.y > 0) { //Arriba
-                    v_przesun.y -= 0.25;
-                    fuerza = 0;
-                }
-                if (v_przesun.x == 0 && v_przesun.y < 0) { //Abajo
-                    v_przesun.y += 0.25;
-                    fuerza = 0;
-                }
+			line[0] = sf::Vertex(sf::Vector2f(world.getDraggedBall()->getPosition()), sf::Color::Blue);
+			line[1] = sf::Vertex(sf::Vector2f((float)point.x, (float)point.y), sf::Color::Blue);
+		}
+        world.update(deltatime);
 
-            }
+		ventana.clear(sf::Color::White);
+		worldRenderer.render(ventana);
 
-        }
-        
+		if (dragging) {
+			ventana.draw(line, 2, sf::Lines);
+		}
+		ventana.display();
 
-        
-        ventana.clear(Color::Black);
+	}
 
-        klatki += 1;
-        if (klatki == 60)
-        {
-            cout << "*";
-            
-            
-            klatki = 0;
-        }
-
-        pilka.przesun();
-        ventana.draw(pilka);
-        ventana.draw(bola);
-        ventana.display();
-
-
-
-
-    }
-	
+	return 0;
 }
 
 //Esta funcion se encarga de verificar que no se repita ningun numero en el arreglo
