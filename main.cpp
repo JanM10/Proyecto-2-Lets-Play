@@ -344,10 +344,13 @@ int main()
 
 				line[0] = sf::Vertex(sf::Vector2f(world.getDraggedBall()->getPosition()), sf::Color::Blue);
 				line[1] = sf::Vertex(sf::Vector2f((float)point.x, (float)point.y), sf::Color::Blue);
+				
 			}
 			if (dragging) {
 				ventanaPrueba.draw(line, 2, sf::Lines);
 			}
+			worldRenderer.getPosition(ventanaPrueba);
+
 			worldRenderer.render(ventanaPrueba);
 			ventanaPrueba.draw(marcador);
 			ventanaPrueba.display();

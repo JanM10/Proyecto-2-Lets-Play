@@ -13,6 +13,16 @@ void Ball::update(float deltatime) {
 
 	circleShape.move(getVelocity());
 
+	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() && getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {
+		setPosition(700, 400);
+		setVelocity(0, 0);
+	}
+	else if (getPosition().x >= 1200 + getRadius() && getPosition().x <= 1260 + getRadius() && getPosition().y >= 300 - getRadius() && getPosition().y <= 480 - getRadius()) {
+		setPosition(700, 400);
+		setVelocity(0, 0);
+	}
+
+
 	if (getPosition().x < 120 + getRadius()) {
 		setPosition(120 + getRadius(), getPosition().y);
 		setVelocity(-getVelocity().x, getVelocity().y);

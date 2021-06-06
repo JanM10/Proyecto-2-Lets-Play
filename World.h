@@ -17,6 +17,7 @@ public:
 	Ball* getDraggedBall() const;
 	std::vector<Ball> getBalls() const;
 
+	
 private:
 	std::vector<Ball> balls;
 

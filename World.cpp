@@ -23,6 +23,8 @@ void World::initBalls(size_t size) {
 	}
 }
 
+
+
 void World::update(float deltatime) {
 	for (Ball& ball : balls) {
 		ball.update(deltatime);
