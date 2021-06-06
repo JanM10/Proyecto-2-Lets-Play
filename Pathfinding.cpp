@@ -1,7 +1,6 @@
 #include "Pathfinding.h"
 
 
-
 //Revisa si el numero de celda se encuentra dentro de los parametros de la matriz
 bool Pathfinding::isValid(int matriz[11][21], const Pair& point)
 {	// Returns true if row number and column number is in range
