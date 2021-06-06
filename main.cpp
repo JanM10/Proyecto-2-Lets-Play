@@ -17,6 +17,7 @@
 #include "Menu.h"
 #include "Backtracking.h"
 #include "Pathfinding.h"
+#include "Textbox.h"
 
 //Instancias de las clases Backtracking y Pathfinding
 Backtracking BT;
@@ -39,7 +40,7 @@ void mostrarBT(int resultado[11][21], int matriz[11][21]);
 
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
-int cantObs = 9;//Cantidad de obstaculos
+int cantObs;//Cantidad de obstaculos
 
 int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -142,31 +143,55 @@ int main()
 	//Si el flag es falso se abre la ventana del BP Game
 	if (flag == false)
 	{
-		sf::RenderWindow obstaculos(sf::VideoMode(400, 200), "Cauantos Obstaculos");
-		sf::String playerInput;
-		sf::Text playerText;
+		sf::RenderWindow obstaculos(sf::VideoMode(400, 200), "Cuantos Obstaculos");
+
+		sf::Font arial;
+		arial.loadFromFile("arial.ttf");
+		Textbox textbox(15, sf::Color::White, true);
+		
+		textbox.setFont(arial);
+		textbox.setPosition({ 100, 100 });
+		textbox.setLimit(true, 1);
+
+
+		Textbox textbox2(15, sf::Color::White, false);
+
+		textbox2.setString("Escriba la cantidadn de jugadores que desea:");
+		textbox2.setFont(arial);
+		textbox2.setPosition({ 75, 50 });
+		
+
+		
 
 		///////////////////////////////////////////////////////////////////////
-		//El programa sigue corriendo siemrpre y cuando la ventana este abierta
+		//El programa sigue corriendo siempre y cuando la ventana este abierta
 		while (obstaculos.isOpen())
 		{
 
 			//Revisa todos los eventos que se activaron desde la ultima iteracion 
 			sf::Event event;
-			while (obstaculos.pollEvent(event))
-			{
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+				cantObs = textbox.getText().front() - 48;
+				obstaculos.close();
+			}
+			while (obstaculos.pollEvent(event)){
+
 				//Se cierra la ventana
-				if (event.type == sf::Event::Closed)
+				switch (event.type)
+				{
+				case sf::Event::Closed:					
 					obstaculos.close();
 
-				if (event.type == sf::Event::TextEntered)
-				{
-					playerInput += event.text.unicode;
-					playerText.setString(playerInput);
+				case::Event::TextEntered:
+					textbox.typedOn(event);
 				}
+				
+		
 			}
-			obstaculos.clear(sf::Color::White);
-			obstaculos.draw(playerText);
+			
+			obstaculos.clear();
+			textbox2.drawTo(obstaculos);
+			textbox.drawTo(obstaculos);
 			obstaculos.display();
 		}
 		/////////////////////////////////////////////////////////////////////
@@ -284,7 +309,7 @@ void numerosRandom(int matriz[11][21]) {
 	srand(time(NULL)); //Numeros aleatorios
 
 
-	int filas[9], columnas[9], num = 1;
+	int filas[9], columnas[9], num = 1 + rand() % (9);
 
 	for (int i = 9; i > abs(cantObs-9); i--)
 	{
@@ -314,7 +339,7 @@ void numerosRandom(int matriz[11][21]) {
 	}
 
 	// 20-#columna para poder hacer la reflexion del otro lado de la matriz
-	for (int x = 0; x < 9; x++)
+	for (int x = 0; x < cantObs; x++)
 	{
 		matriz[filas[x]][columnas[x]] = 1;
 		matriz[filas[x]][20-columnas[x]] = 1;
