@@ -2,7 +2,7 @@
 
 World::World() {
 	draggedBall = nullptr;
-	initBalls(5);
+	initBalls(1);
 }
 
 World::~World() {

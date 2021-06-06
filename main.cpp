@@ -202,12 +202,23 @@ int main()
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
+		ventanaPrueba.setFramerateLimit(60);
 
 		const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
 
 		vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
 
 		cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
+
+		World world;
+		WorldRenderer worldRenderer(world);
+
+		sf::Vertex line[] = { sf::Vertex(sf::Vector2f(-1, -1)), sf::Vertex(sf::Vector2f(-1, -1)) };
+
+		bool dragging = false;
+
+		float deltatime = 0.f;
+		sf::Clock clock;
 
 		//Este for rellena la el vector con los cuadrados que se van a mostrar en pantalla, junto con sus colores y rayas
 		for (int x = 0; x < 11; x++)
@@ -278,6 +289,8 @@ int main()
 		// run the program as long as the window is open
 		while (ventanaPrueba.isOpen())
 		{
+			deltatime = clock.restart().asSeconds();
+
 			// check all the window's events that were triggered since the last iteration of the loop
 			sf::Event event;
 			while (ventanaPrueba.pollEvent(event))
@@ -285,86 +298,61 @@ int main()
 				// "close requested" event: we close the window
 				if (event.type == sf::Event::Closed)
 					ventanaPrueba.close();
+				
+				switch (event.type) {
 
-				ventanaPrueba.clear(sf::Color(255, 255, 255));
+				case sf::Event::MouseButtonPressed:
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
 
-				for (int x = 0; x < 11; x++)
-				{
-					for (int y = 0; y < 21; y++)
-					{
-						ventanaPrueba.draw(cuadradosCancha[x][y]);
+						if (world.dragBall(sf::Vector2f((float)point.x, (float)point.y))) {
+							dragging = true;
+						}
+
 					}
+					break;
+
+				case sf::Event::MouseButtonReleased:
+					if (event.mouseButton.button == sf::Mouse::Left) {
+
+						world.setDraggedVelocity(line[1].position.x, line[1].position.y);
+						dragging = false;
+					}
+					break;
 				}
 
-				ventanaPrueba.display();
+				
 			}
+			ventanaPrueba.clear(sf::Color::Black);
+			
+			for (int x = 0; x < 11; x++)
+			{
+				for (int y = 0; y < 21; y++)
+				{
+					ventanaPrueba.draw(cuadradosCancha[x][y]);
+				}
+			}
+			if (dragging) {
+				sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
+
+				line[0] = sf::Vertex(sf::Vector2f(world.getDraggedBall()->getPosition()), sf::Color::Blue);
+				line[1] = sf::Vertex(sf::Vector2f((float)point.x, (float)point.y), sf::Color::Blue);
+			}
+			if (dragging) {
+				ventanaPrueba.draw(line, 2, sf::Lines);
+			}
+			worldRenderer.render(ventanaPrueba);
+			
+			ventanaPrueba.display();
+			world.update(deltatime);
 		}
 
 	}else 
 {
-	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP Game"); //Ventana donde se encuentra BP Game
-	ventana.setFramerateLimit(120);
-
-	World world;
-	WorldRenderer worldRenderer(world);
-
-	sf::Vertex line[] = { sf::Vertex(sf::Vector2f(-1, -1)), sf::Vertex(sf::Vector2f(-1, -1)) };
-
-	bool dragging = false;
-
-	float deltatime = 0.f;
-	sf::Clock clock;
-
-	Event e;
-
-	while (ventana.isOpen())
-	{
-		deltatime = clock.restart().asSeconds();
-
-		while (ventana.pollEvent(e))
-		{
-			switch (e.type) {
-			case sf::Event::Closed:
-				ventana.close();
-				break;
-
-			case sf::Event::MouseButtonPressed:
-				if (e.mouseButton.button == sf::Mouse::Left) {
-					sf::Vector2i point = sf::Mouse::getPosition(ventana);
-
-					if (world.dragBall(sf::Vector2f((float)point.x, (float)point.y))) {
-						dragging = true;
-					}
-
-				}
-				break;
-
-			case sf::Event::MouseButtonReleased:
-				if (e.mouseButton.button == sf::Mouse::Left) {
-
-					world.setDraggedVelocity(line[1].position.x, line[1].position.y);
-					dragging = false;
-				}
-				break;
-			}
-		}
-		if (dragging) {
-			sf::Vector2i point = sf::Mouse::getPosition(ventana);
-
-			line[0] = sf::Vertex(sf::Vector2f(world.getDraggedBall()->getPosition()), sf::Color::Blue);
-			line[1] = sf::Vertex(sf::Vector2f((float)point.x, (float)point.y), sf::Color::Blue);
-		}
-		world.update(deltatime);
-
-		ventana.clear(sf::Color::White);
-		worldRenderer.render(ventana);
-
-		if (dragging) {
-			ventana.draw(line, 2, sf::Lines);
-		}
-		ventana.display();
-
-	}
+	/*
+	* 
+	* 
+	*/
 	}
 }
 

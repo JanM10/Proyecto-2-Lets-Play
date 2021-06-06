@@ -4,12 +4,12 @@ WorldRenderer::WorldRenderer(World& world) : world(world) {}
 
 WorldRenderer::~WorldRenderer() {}
 
-void WorldRenderer::render(sf::RenderWindow& ventana) const {
-	renderBalls(ventana);
+void WorldRenderer::render(sf::RenderWindow& ventanaPrueba) const {
+	renderBalls(ventanaPrueba);
 }
 
-void WorldRenderer::renderBalls(sf::RenderWindow& ventana) const {
+void WorldRenderer::renderBalls(sf::RenderWindow& ventanaPrueba) const {
 	for (Ball ball : world.getBalls()) {
-		ball.draw(ventana);
+		ball.draw(ventanaPrueba);
 	}
 }

@@ -9,8 +9,8 @@ public:
 	WorldRenderer(World& world);
 	~WorldRenderer();
 
-	void render(sf::RenderWindow& ventana) const;
-	void renderBalls(sf::RenderWindow& ventana) const;
+	void render(sf::RenderWindow& ventanaPrueba) const;
+	void renderBalls(sf::RenderWindow& ventanaPrueba) const;
 
 private:
 	World& world;
