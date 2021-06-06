@@ -39,7 +39,7 @@ void mostrarBT(int resultado[11][21], int matriz[11][21]);
 
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
-int cantObs = 9;//Cantidad de obstaculos
+int cantObs = 1;//Cantidad de obstaculos
 
 int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},

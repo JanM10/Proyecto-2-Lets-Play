@@ -1,43 +1,45 @@
 #include "Pathfinding.h"
 
 
-// A Utility Function to check whether given cell (row, col)
-// is a valid cell or not.
+
+//Revisa si el numero de celda se encuentra dentro de los parametros de la matriz
 bool Pathfinding::isValid(int matriz[11][21], const Pair& point)
-{	// Returns true if row number and column number is in
-// range
+{	// Returns true if row number and column number is in range
+	//Retorna verdadero si el numero de la fila y la columna esta dentro del rango
 	if (11 > 0 && 21 > 0)
 		return (point.first >= 0) && (point.first < 11) && (point.second >= 0) && (point.second < 21);
 	return false;
 }
 
-// A Utility Function to check whether the given cell is
-// blocked or not
+
+//Esta funcion revisa si la celda esta bloqueada o no
 bool Pathfinding::isUnBlocked(int matriz[11][21], const Pair& point)
 {
-	// Returns true if the cell is not blocked else false
+
+	//Regresa verdadero si la celda no esta bloqueada en el caso contrario falso
 	return isValid(matriz, point) && matriz[point.first][point.second] == 0;
 }
 
-// A Utility Function to check whether destination cell has
-// been reached or not
+
+//Esta funcion revisa si el punto actual es el destino o no
 bool Pathfinding::isDestination(const Pair& position, const Pair& dest)
 {
 	return position == dest;
 }
 
-// A Utility Function to calculate the 'h' heuristics.
+
+//Calcula la heuristica "H"
 double Pathfinding::calculateHValue(const Pair& src, const Pair& dest)
 {
-	// h is estimated with the two points distance formula
+
 	return sqrt(pow((src.first - dest.first), 2.0) + pow((src.second - dest.second), 2.0));
 }
 
-// A Utility Function to trace the path from the source to
-// destination
+
+//Esta funcion imprime el camino hacia el destino en caso de que si haya
 void Pathfinding::tracePath(const array<array<cell, 21>, 11>& cellDetails, const Pair& dest, int matriz[11][21])
 {
-	printf("\nThe Path is ");
+	printf("\nEl camino es ");
 
 	stack<Pair> Path;
 
@@ -63,25 +65,26 @@ void Pathfinding::tracePath(const array<array<cell, 21>, 11>& cellDetails, const
 	}
 }
 
-// A Function to find the shortest path between a given
-// source cell to a destination cell according to A* Search
-// Algorithm
+
+//Esta funcion encuentra el camino mas corto entre un punto A y un punto B, utiliza el algoritmo A*
 void Pathfinding::aStarSearch(int matriz[11][21], const Pair& src, const Pair& dest)
 {
-	// If the source is out of range
+
+	//El punto de inicio esta fuera del rango
 	if (!isValid(matriz, src)) {
-		printf("Source is invalid\n");
+		printf("El punto de inicio no es valido\n");
 		return;
 	}
 
-	// If the destination is out of range
+
+	//El destino se encuentra afeura del ragno
 	if (!isValid(matriz, dest)) {
-		printf("Destination is invalid\n");
+		printf("Este destino no es valido\n");
 		return;
 	}
 
-	// Either the source or the destination is blocked
-	//
+
+	//El camino de inicio o el destino estan bloqueados
 	if (!isUnBlocked(matriz, src) || !isUnBlocked(matriz, dest)) {
 		printf("El \n");
 		return;
@@ -117,7 +120,7 @@ void Pathfinding::aStarSearch(int matriz[11][21], const Pair& src, const Pair& d
 
 	while (!openList.empty()) {
 		const Tuple& p = openList.top();
-		// Add this vertex to the closed list
+
 		i = get<1>(p); // Segundo elemento de la tupla
 		j = get<2>(p); // Tercer elemento de la tupla
 

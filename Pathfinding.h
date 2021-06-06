@@ -24,7 +24,7 @@ public:
 
 	// A structure to hold the neccesary parameters
 	struct cell {
-		// Row and Column index of its parent
+
 		Pair parent;
 		// f = g + h
 		double f, g, h;
