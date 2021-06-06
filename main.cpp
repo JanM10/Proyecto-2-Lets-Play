@@ -199,10 +199,17 @@ int main()
 		}
 		/////////////////////////////////////////////////////////////////////
 
-		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
+		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
 		ventanaPrueba.setFramerateLimit(60);
+
+		sf::Text marcador;
+		marcador.setFont(arial);
+
+		marcador.setString("Cantida maxima de anotaciones: 5");
+		marcador.setPosition(sf::Vector2f(120, 50));
+		
 
 		const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
 
@@ -253,16 +260,16 @@ int main()
 		asignarColores(cuadrosCancha2);
 
 		////Src(source) es el inicio del pathfinding
-		//Pair src(5, 10);
+		Pair src(5, 10);
 
 		////Dest muestra el destino del pathfinding
-		//Pair dest(5, 19);
+		Pair dest(5, 19);
 
-		//PF.aStarSearch(cuadrosCancha2, src, dest);
+		PF.aStarSearch(cuadrosCancha2, src, dest);
 
-		BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
+		//BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
 
-		mostrarBT(resultado, cuadrosCancha2);
+		//mostrarBT(resultado, cuadrosCancha2);
 
 		for (int x = 0; x < 11; x++)
 		{
@@ -342,7 +349,7 @@ int main()
 				ventanaPrueba.draw(line, 2, sf::Lines);
 			}
 			worldRenderer.render(ventanaPrueba);
-			
+			ventanaPrueba.draw(marcador);
 			ventanaPrueba.display();
 			world.update(deltatime);
 		}
