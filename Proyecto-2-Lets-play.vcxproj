@@ -88,12 +88,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;TGUI_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Program Files\PROGRAMAR\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\Progra\Librerias\SFML-2.5.1\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\PROGRAMAR\SFML-2.5.1\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Progra\Librerias\SFML-2.5.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-main-d.lib;sfml-system-d.lib;sfml-window-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -146,16 +146,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Backtracking.cpp" />
+    <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Collision.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
+    <ClCompile Include="World.cpp" />
+    <ClCompile Include="WorldRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Backtracking.h" />
+    <ClInclude Include="Ball.h" />
+    <ClInclude Include="Collision.h" />
     <ClInclude Include="Textbox.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="World.h" />
+    <ClInclude Include="WorldRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Proyecto-2-Lets-play.rc" />

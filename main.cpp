@@ -18,6 +18,8 @@
 #include "Backtracking.h"
 #include "Pathfinding.h"
 #include "Textbox.h"
+#include "World.h"
+#include "WorldRenderer.h"
 
 //Instancias de las clases Backtracking y Pathfinding
 Backtracking BT;
@@ -77,6 +79,7 @@ typedef tuple<double, int, int> Tuple;
 
 int main()
 {
+	srand((unsigned)(time(NULL)));
 
 	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
 	Menu menu(window.getSize().x, window.getSize().y);
@@ -296,10 +299,72 @@ int main()
 				ventanaPrueba.display();
 			}
 		}
-	}else {
-	/*
-	* AQUI HAY QUE PONER EL CODIGO DEL PUZZLE GAME
-	*/
+
+	}else 
+{
+	sf::RenderWindow ventana(sf::VideoMode(1400, 800), "BP Game"); //Ventana donde se encuentra BP Game
+	ventana.setFramerateLimit(120);
+
+	World world;
+	WorldRenderer worldRenderer(world);
+
+	sf::Vertex line[] = { sf::Vertex(sf::Vector2f(-1, -1)), sf::Vertex(sf::Vector2f(-1, -1)) };
+
+	bool dragging = false;
+
+	float deltatime = 0.f;
+	sf::Clock clock;
+
+	Event e;
+
+	while (ventana.isOpen())
+	{
+		deltatime = clock.restart().asSeconds();
+
+		while (ventana.pollEvent(e))
+		{
+			switch (e.type) {
+			case sf::Event::Closed:
+				ventana.close();
+				break;
+
+			case sf::Event::MouseButtonPressed:
+				if (e.mouseButton.button == sf::Mouse::Left) {
+					sf::Vector2i point = sf::Mouse::getPosition(ventana);
+
+					if (world.dragBall(sf::Vector2f((float)point.x, (float)point.y))) {
+						dragging = true;
+					}
+
+				}
+				break;
+
+			case sf::Event::MouseButtonReleased:
+				if (e.mouseButton.button == sf::Mouse::Left) {
+
+					world.setDraggedVelocity(line[1].position.x, line[1].position.y);
+					dragging = false;
+				}
+				break;
+			}
+		}
+		if (dragging) {
+			sf::Vector2i point = sf::Mouse::getPosition(ventana);
+
+			line[0] = sf::Vertex(sf::Vector2f(world.getDraggedBall()->getPosition()), sf::Color::Blue);
+			line[1] = sf::Vertex(sf::Vector2f((float)point.x, (float)point.y), sf::Color::Blue);
+		}
+		world.update(deltatime);
+
+		ventana.clear(sf::Color::White);
+		worldRenderer.render(ventana);
+
+		if (dragging) {
+			ventana.draw(line, 2, sf::Lines);
+		}
+		ventana.display();
+
+	}
 	}
 }
 
