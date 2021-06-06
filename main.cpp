@@ -15,6 +15,11 @@
 #include <string>
 #include <stdlib.h>
 
+#include "Ball.h"
+#include "WorldRenderer.h"
+#include <vector>
+#include "World.h"
+
 #include "Menu.h"
 #include "Backtracking.h"
 #include "Pathfinding.h"
@@ -87,7 +92,7 @@ int main()
 	{
 		sf::Event event;
 
-		while (window.pollEvent(event))
+		while (window.pollEvent(event)) //Durante el tiempo que la ventana est� abierta se mueve a travez del menu con las teclas
 		{
 			switch (event.type)
 			{
@@ -429,7 +434,8 @@ bool verificar(int num, int arreglo[9])
 {
 	for (int i = 0; i < 9; i++)
 	{
-		if (num == arreglo[i]) {
+		if (num == arreglo[i])
+			{
 			return true; //Si el numero ya existe retorna verdadero.
 		}
 	}
