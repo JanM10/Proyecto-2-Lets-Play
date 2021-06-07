@@ -29,7 +29,7 @@ Pathfinding PF;
 
 using namespace std;
 
-//Menu ventana_nueva;
+//Declaracion de funciones
 bool verificar(int num, int arreglo[9]);
 
 void numerosRandom(int matriz[11][21]);
@@ -42,20 +42,20 @@ void asignarColores(int cuadrosCancha2[11][21]);
 
 void mostrarBT(int resultado[11][21], int matriz[11][21]);
 
+//Declaracion de variables publicas
 const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
-
 
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
 int cantObs;//Cantidad de obstaculos
 
-int compuGoles = 0, jugadorGoles = 0;
+int compuGoles = 0, jugadorGoles = 0;//Cantidad de goles
 
-bool jugador = true;
+bool jugador = true;//Turno del jugador o computadora
 
-int contador = 1;
+int contador = 1;//Contador para el turno del jugador o computadora
 
-int resultado[11][21]{
+int resultado[11][21]{ //Matriz para el backtracking
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -69,7 +69,7 @@ int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
 
 
-int colores[11][21]{
+int colores[11][21]{ //Matriz de respaldo
 		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 },
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
@@ -86,9 +86,8 @@ int posicionesX[18];
 
 int posicionesY[18];
 
-// Creating a shortcut for int, int pair type
 typedef pair<int, int> Pair;
-// Creating a shortcut for tuple<int, int, int> type
+
 typedef tuple<double, int, int> Tuple;
 
 
@@ -177,10 +176,8 @@ int main()
 		textbox2.setString("Escriba la cantidadn de jugadores que desea:");
 		textbox2.setFont(arial);
 		textbox2.setPosition({ 75, 50 });
-		
 
-		///////////////////////////////////////////////////////////////////////
-		//El programa sigue corriendo siempre y cuando la ventana este abierta
+		//En esta ventana el usuario puede escribir la cantidad de jugadores que desea poner en la cancha
 		while (obstaculos.isOpen())
 		{
 
@@ -210,10 +207,11 @@ int main()
 			textbox.drawTo(obstaculos);
 			obstaculos.display();
 		}
-		/////////////////////////////////////////////////////////////////////
+
 
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
 		//////////////////////////////////////////////////////////////
+		//Textos que van en pantalla
 		sf::Text marcador, textoCompu, textoJugador, ganador;
 		marcador.setFont(arial);
 		textoCompu.setFont(arial);
@@ -263,8 +261,6 @@ int main()
 
 			}
 		}
-
-
 
 		//Matriz de la cancha, cada numero representa algo a la hora de imprimirse
 		int cuadrosCancha2[11][21]{ 
@@ -335,6 +331,7 @@ int main()
 			int posX = (worldRenderer.getPositionX(ventanaPrueba) / 60) - 1;
 			int posY = (worldRenderer.getPositionY(ventanaPrueba) / 60) - 1;
 
+			//Si la velocidad del balon es igual o menor que cero, se hace el calculo del backtracking o el pathfinding
 			if (worldRenderer.getVelocityX(ventanaPrueba) <= 0.01 && worldRenderer.getVelocityY(ventanaPrueba) <= 0.01
 				|| worldRenderer.getVelocityX(ventanaPrueba) == 0 && worldRenderer.getVelocityY(ventanaPrueba) == 0)
 			{
@@ -363,9 +360,10 @@ int main()
 				}
 				else
 				{
-
+					//Se envia la posicion de inicio y de fin al backtracking
 					BT.hallarCamino(cuadrosCancha2, posY, posX, 5, 1, resultado);
 
+					//Se calcula la ruta utilizando backtraking
 					mostrarBT(resultado, cuadrosCancha2);
 
 					jugador = true;
@@ -377,7 +375,7 @@ int main()
 
 
 
-
+			//Se le asignas los colores a la cancha
 			for (int x = 0; x < 11; x++)
 			{
 				for (int y = 0; y < 21; y++)
@@ -405,6 +403,7 @@ int main()
 				}
 			}
 			int k = 0;
+			//Se guardan las posiciones exactas de los obstaculos para las colosiones
 			for (int x = 0; x < 11; x++)
 			{
 				for (int y = 0; y < 21; y++)
@@ -418,6 +417,7 @@ int main()
 				}
 			}
 
+			//Se agregan las posiciones de los obstaculos para que la bola rebote en los puntos especificados
 			for (int i = 0; i < 18; i++)
 			{
 				if (worldRenderer.getPositionX(ventanaPrueba) >= posicionesX[i]-60  + worldRenderer.getRadius(ventanaPrueba) &&
@@ -460,6 +460,7 @@ int main()
 			//cout << "X: " << cuadradosCancha[1][1].getPosition().x << " " << "Y: " << cuadradosCancha[1][1].getPosition().y;
 			//imprimitMatriz(cuadrosCancha2);
 			
+			//Se muestra toda la cancha en pantalla
 			for (int x = 0; x < 11; x++)
 			{
 				for (int y = 0; y < 21; y++)
@@ -467,8 +468,6 @@ int main()
 					ventanaPrueba.draw(cuadradosCancha[x][y]);
 				}
 			}
-
-
 
 
 			if (dragging) {
@@ -482,6 +481,7 @@ int main()
 				ventanaPrueba.draw(line, 2, sf::Lines);
 			}
 
+			//Se nuestra la pantalla del ganador
 			if (compuGoles == 5)
 			{
 				ventanaPrueba.clear(sf::Color::Black);
@@ -498,8 +498,8 @@ int main()
 				ventanaPrueba.draw(ganador);
 			}
 
+			//Se suma un gol y se muestra en pantalla
 			int CL = worldRenderer.getLado(ventanaPrueba);
-
 			if (CL == 1)
 			{
 				compuGoles += 1;
@@ -514,7 +514,7 @@ int main()
 			}
 
 
-
+			//Todo lo que se muestra en pantalla
 			worldRenderer.render(ventanaPrueba);
 			ventanaPrueba.draw(marcador);
 			ventanaPrueba.draw(textoCompu);

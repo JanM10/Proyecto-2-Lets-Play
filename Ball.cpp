@@ -35,76 +35,89 @@ void Ball::update(float deltatime) {
 		setVelocity(0, 0);
 	}
 
-
-	if (getPosition().x < 120 + getRadius()) {
+	//Bordes del mapa
+	if (getPosition().x < 120 + getRadius()) {//Borde izquierdo
 		setPosition(120 + getRadius(), getPosition().y);
 		setVelocity(-getVelocity().x, getVelocity().y);
 	}
-	else if (getPosition().x > 1260 - getRadius()) {
+	else if (getPosition().x > 1260 - getRadius()) {//Borde derecho
 		setPosition(1260 - getRadius(), getPosition().y);
 		setVelocity(-getVelocity().x, getVelocity().y);
 	}
 
-	if (getPosition().y < 120 + getRadius()) {
+	if (getPosition().y < 120 + getRadius()) {//Borde superior
 		setPosition(getPosition().x, 120 + getRadius());
 		setVelocity(getVelocity().x, -getVelocity().y);
 	}
-	else if (getPosition().y > 660 - getRadius()) {
+	else if (getPosition().y > 660 - getRadius()) {//Borde inferior
 		setPosition(getPosition().x, 660 - getRadius());
 		setVelocity(getVelocity().x, -getVelocity().y);
 	}
 }
 
+//Se dibuja el balon
 void Ball::draw(sf::RenderWindow& window) {
 	window.draw(circleShape);
 }
 
+//Se asigna una posicion al balon
 void Ball::setPosition(float x, float y) {
 	this->circleShape.setPosition(sf::Vector2f(x, y));
 }
 
+//Devuelve el radio del balon
 float Ball::getRadius() const {
 	return circleShape.getRadius();
 }
 
+//Devuelve la posicion del balon
 sf::Vector2f Ball::getPosition() const {
 	return circleShape.getPosition();
 }
 
+//Devuelve el lado donde se metio el gol
 int Ball::getLado() const
 {
 	return lado;
 }
 
+//Se asigna un lado donde se haya metido el gol
 void Ball::setLado(int gol)
 {
 	lado = gol;
 }
 
+//Se asigna una velocidad
 void Ball::setVelocity(float x, float y) {
 	this->velocity = sf::Vector2f(x, y);
 }
 
+//Se asigna una aceleracion
 void Ball::setAcceleration(float x, float y) {
 	this->acceleration = sf::Vector2f(x, y);
 }
 
+//Se asigna el poder jalar el balon
 void Ball::setDragged(bool dragged) {
 	this->dragged = dragged;
 }
 
+//Devuelve la masa
 float Ball::getMass() const {
 	return mass;
 }
 
+//Devuelve si se esta jalando el balon o no
 float Ball::getDragged() const {
 	return dragged;
 }
 
+//Devuelve la velocidad
 sf::Vector2f Ball::getVelocity() const {
 	return velocity;
 }
 
+//Devuelve la aceleracion
 sf::Vector2f Ball::getAcceleration() const {
 	return acceleration;
 }
