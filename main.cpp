@@ -13,11 +13,15 @@
 #include <stack>
 #include <tuple>
 #include <string>
+#include "windows.h"
 
 #include "Menu.h"
 #include "Backtracking.h"
 #include "Pathfinding.h"
 #include "Textbox.h"
+#include "World.h"
+#include "WorldRenderer.h"
+#include "Ball.h"
 
 //Instancias de las clases Backtracking y Pathfinding
 Backtracking BT;
@@ -41,6 +45,8 @@ void mostrarBT(int resultado[11][21], int matriz[11][21]);
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
 int cantObs;//Cantidad de obstaculos
+
+int compuGoles = 0, jugadorGoles = 0;
 
 int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -77,6 +83,7 @@ typedef tuple<double, int, int> Tuple;
 
 int main()
 {
+	srand((unsigned)(time(NULL)));
 
 	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
 	Menu menu(window.getSize().x, window.getSize().y);
@@ -161,8 +168,6 @@ int main()
 		textbox2.setPosition({ 75, 50 });
 		
 
-		
-
 		///////////////////////////////////////////////////////////////////////
 		//El programa sigue corriendo siempre y cuando la ventana este abierta
 		while (obstaculos.isOpen())
@@ -196,15 +201,44 @@ int main()
 		}
 		/////////////////////////////////////////////////////////////////////
 
-		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "My window");
+		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
+
+		sf::Text marcador, textoCompu, textoJugador, ganador;
+		marcador.setFont(arial);
+		textoCompu.setFont(arial);
+		textoJugador.setFont(arial);
+		ganador.setFont(arial);
+		ganador.setCharacterSize(50);
+
+		marcador.setString("Cantida maxima de anotaciones: 5");
+		marcador.setPosition(sf::Vector2f(500, 25));
+
+		textoCompu.setString("Computadora: " + to_string(compuGoles));
+		textoCompu.setPosition(sf::Vector2f(250, 725));
+
+		textoJugador.setString("Jugador: " + to_string(jugadorGoles));
+		textoJugador.setPosition(sf::Vector2f(900, 725));
+
+
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
+		ventanaPrueba.setFramerateLimit(60);
 
 		const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
 
 		vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
 
 		cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
+
+		World world;
+		WorldRenderer worldRenderer(world);
+
+		sf::Vertex line[] = { sf::Vertex(sf::Vector2f(-1, -1)), sf::Vertex(sf::Vector2f(-1, -1)) };
+
+		bool dragging = false;
+
+		float deltatime = 0.f;
+		sf::Clock clock;
 
 		//Este for rellena la el vector con los cuadrados que se van a mostrar en pantalla, junto con sus colores y rayas
 		for (int x = 0; x < 11; x++)
@@ -239,16 +273,16 @@ int main()
 		asignarColores(cuadrosCancha2);
 
 		////Src(source) es el inicio del pathfinding
-		//Pair src(5, 10);
+		Pair src(5, 10);
 
 		////Dest muestra el destino del pathfinding
-		//Pair dest(5, 19);
+		Pair dest(5, 19);
 
-		//PF.aStarSearch(cuadrosCancha2, src, dest);
+		PF.aStarSearch(cuadrosCancha2, src, dest);
 
-		BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
+		//BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
 
-		mostrarBT(resultado, cuadrosCancha2);
+		//mostrarBT(resultado, cuadrosCancha2);
 
 		for (int x = 0; x < 11; x++)
 		{
@@ -275,6 +309,8 @@ int main()
 		// run the program as long as the window is open
 		while (ventanaPrueba.isOpen())
 		{
+			deltatime = clock.restart().asSeconds();
+
 			// check all the window's events that were triggered since the last iteration of the loop
 			sf::Event event;
 			while (ventanaPrueba.pollEvent(event))
@@ -282,23 +318,97 @@ int main()
 				// "close requested" event: we close the window
 				if (event.type == sf::Event::Closed)
 					ventanaPrueba.close();
+				
+				switch (event.type) {
 
-				ventanaPrueba.clear(sf::Color(255, 255, 255));
+				case sf::Event::MouseButtonPressed:
+					if (event.mouseButton.button == sf::Mouse::Left) {
+						sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
 
-				for (int x = 0; x < 11; x++)
-				{
-					for (int y = 0; y < 21; y++)
-					{
-						ventanaPrueba.draw(cuadradosCancha[x][y]);
+						if (world.dragBall(sf::Vector2f((float)point.x, (float)point.y))) {
+							dragging = true;
+						}
+
 					}
+					break;
+
+				case sf::Event::MouseButtonReleased:
+					if (event.mouseButton.button == sf::Mouse::Left) {
+
+						world.setDraggedVelocity(line[1].position.x, line[1].position.y);
+						dragging = false;
+					}
+					break;
 				}
 
-				ventanaPrueba.display();
+				
 			}
+			ventanaPrueba.clear(sf::Color::Black);
+			
+			for (int x = 0; x < 11; x++)
+			{
+				for (int y = 0; y < 21; y++)
+				{
+					ventanaPrueba.draw(cuadradosCancha[x][y]);
+				}
+			}
+			if (dragging) {
+				sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
+
+				line[0] = sf::Vertex(sf::Vector2f(world.getDraggedBall()->getPosition()), sf::Color::Blue);
+				line[1] = sf::Vertex(sf::Vector2f((float)point.x, (float)point.y), sf::Color::Blue);
+				
+			}
+			if (dragging) {
+				ventanaPrueba.draw(line, 2, sf::Lines);
+			}
+
+			if (compuGoles == 5)
+			{
+				ventanaPrueba.clear(sf::Color::Black);
+				ganador.setString("El ganador es la Computadora");
+				ganador.setPosition(sf::Vector2f(350, 500));
+				ventanaPrueba.draw(ganador);
+
+			}
+			else if (jugadorGoles == 5)
+			{
+				ventanaPrueba.clear(sf::Color::Black);
+				ganador.setString("Felicidades eres el ganador!");
+				ganador.setPosition(sf::Vector2f(400, 500));
+				ventanaPrueba.draw(ganador);
+			}
+
+			int CL = worldRenderer.getLado(ventanaPrueba);
+
+			if (CL == 1)
+			{
+				compuGoles += 1;
+				worldRenderer.setLado(ventanaPrueba);
+				textoCompu.setString("Computadora: " + to_string(compuGoles));
+			}
+			else if (CL == 2)
+			{
+				jugadorGoles += 1;
+				worldRenderer.setLado(ventanaPrueba);
+				textoJugador.setString("Jugador: " + to_string(jugadorGoles));
+			}
+
+			worldRenderer.getPosition(ventanaPrueba);
+
+			worldRenderer.render(ventanaPrueba);
+			ventanaPrueba.draw(marcador);
+			ventanaPrueba.draw(textoCompu);
+			ventanaPrueba.draw(textoJugador);
+			ventanaPrueba.display();
+			world.update(deltatime);
 		}
-	}else {
+
+	}else 
+{
 	/*
-	* AQUI HAY QUE PONER EL CODIGO DEL PUZZLE GAME
+	* 
+	* 
 	*/
 	}
 }
@@ -413,4 +523,5 @@ void mostrarBT(int resultado[11][21], int matriz[11][21])
 		}
 	}
 }
+
 
