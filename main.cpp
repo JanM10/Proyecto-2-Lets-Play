@@ -137,6 +137,9 @@ int main()
 		window.display();
 	}
 
+
+
+
 	/*sf::RenderWindow ventana(sf::VideoMode(1400, 800), "Lets play");
     ventana.setFramerateLimit(120);
     int klatki = 0;
