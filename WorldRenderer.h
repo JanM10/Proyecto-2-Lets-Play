@@ -15,6 +15,8 @@ public:
 	void render(sf::RenderWindow& ventanaPrueba) const;
 	void renderBalls(sf::RenderWindow& ventanaPrueba) const;
 	void getPosition(sf::RenderWindow& ventanaPrueba) const;
+	int getLado(sf::RenderWindow& ventanaPrueba) const;
+	void setLado(sf::RenderWindow& ventanaPrueba);
 
 private:
 	World& world;

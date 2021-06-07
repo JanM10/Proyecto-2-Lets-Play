@@ -2,6 +2,9 @@
 #define BALL_H
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
+
+using namespace std;
 
 class Ball {
 
@@ -24,6 +27,9 @@ public:
 	float getRadius() const;
 	sf::Vector2f getPosition() const;
 
+	int getLado() const;
+	void setLado(int gol);
+
 private:
 	sf::Vector2f velocity;
 	sf::Vector2f acceleration;
@@ -31,6 +37,7 @@ private:
 
 	bool dragged;
 	float mass;
+	int lado;
 };
 
 #endif

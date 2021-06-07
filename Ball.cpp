@@ -13,11 +13,23 @@ void Ball::update(float deltatime) {
 
 	circleShape.move(getVelocity());
 
+	if (getVelocity().x <= 0.01 && getVelocity().y <= 0.01)
+	{
+		//cout << "Se detuvo" << endl;
+		setLado(0);
+	}
+
+	//Porteria izquierda
 	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() && getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {
+		int gol = 1;
+		setLado(gol);
 		setPosition(700, 400);
 		setVelocity(0, 0);
 	}
+	//Porteria derecha
 	else if (getPosition().x >= 1200 + getRadius() && getPosition().x <= 1260 + getRadius() && getPosition().y >= 300 - getRadius() && getPosition().y <= 480 - getRadius()) {
+		int gol = 2;
+		setLado(gol);
 		setPosition(700, 400);
 		setVelocity(0, 0);
 	}
@@ -56,6 +68,16 @@ float Ball::getRadius() const {
 
 sf::Vector2f Ball::getPosition() const {
 	return circleShape.getPosition();
+}
+
+int Ball::getLado() const
+{
+	return lado;
+}
+
+void Ball::setLado(int gol)
+{
+	lado = gol;
 }
 
 void Ball::setVelocity(float x, float y) {

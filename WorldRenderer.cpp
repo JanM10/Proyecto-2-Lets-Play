@@ -20,5 +20,20 @@ void WorldRenderer::getPosition(sf::RenderWindow& ventanaPrueba) const{
 	for (Ball ball : world.getBalls()) {
 		cout << "X: " << ((int)(ball.getPosition().x/60))-1 << " " << "Y: " << ((int)ball.getPosition().y/60)-1 << endl;
 	}
-	
 }
+
+int WorldRenderer::getLado(sf::RenderWindow& ventanaPrueba) const
+{
+	for (Ball ball : world.getBalls()) {
+		return ball.getLado();
+	}
+}
+
+void WorldRenderer::setLado(sf::RenderWindow& ventanaPrueba)
+{
+	for (Ball ball : world.getBalls()) {
+		ball.setLado(0);
+	}
+}
+
+

@@ -13,6 +13,7 @@
 #include <stack>
 #include <tuple>
 #include <string>
+#include "windows.h"
 
 #include "Menu.h"
 #include "Backtracking.h"
@@ -20,6 +21,7 @@
 #include "Textbox.h"
 #include "World.h"
 #include "WorldRenderer.h"
+#include "Ball.h"
 
 //Instancias de las clases Backtracking y Pathfinding
 Backtracking BT;
@@ -43,6 +45,8 @@ void mostrarBT(int resultado[11][21], int matriz[11][21]);
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
 int cantObs;//Cantidad de obstaculos
+
+int compuGoles = 0, jugadorGoles = 0;
 
 int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -164,8 +168,6 @@ int main()
 		textbox2.setPosition({ 75, 50 });
 		
 
-		
-
 		///////////////////////////////////////////////////////////////////////
 		//El programa sigue corriendo siempre y cuando la ventana este abierta
 		while (obstaculos.isOpen())
@@ -200,16 +202,27 @@ int main()
 		/////////////////////////////////////////////////////////////////////
 
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
+
+		sf::Text marcador, textoCompu, textoJugador, ganador;
+		marcador.setFont(arial);
+		textoCompu.setFont(arial);
+		textoJugador.setFont(arial);
+		ganador.setFont(arial);
+		ganador.setCharacterSize(50);
+
+		marcador.setString("Cantida maxima de anotaciones: 5");
+		marcador.setPosition(sf::Vector2f(500, 25));
+
+		textoCompu.setString("Computadora: " + to_string(compuGoles));
+		textoCompu.setPosition(sf::Vector2f(250, 725));
+
+		textoJugador.setString("Jugador: " + to_string(jugadorGoles));
+		textoJugador.setPosition(sf::Vector2f(900, 725));
+
+
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
 		ventanaPrueba.setFramerateLimit(60);
-
-		sf::Text marcador;
-		marcador.setFont(arial);
-
-		marcador.setString("Cantida maxima de anotaciones: 5");
-		marcador.setPosition(sf::Vector2f(120, 50));
-		
 
 		const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
 
@@ -349,10 +362,44 @@ int main()
 			if (dragging) {
 				ventanaPrueba.draw(line, 2, sf::Lines);
 			}
+
+			if (compuGoles == 5)
+			{
+				ventanaPrueba.clear(sf::Color::Black);
+				ganador.setString("El ganador es la Computadora");
+				ganador.setPosition(sf::Vector2f(350, 500));
+				ventanaPrueba.draw(ganador);
+
+			}
+			else if (jugadorGoles == 5)
+			{
+				ventanaPrueba.clear(sf::Color::Black);
+				ganador.setString("Felicidades eres el ganador!");
+				ganador.setPosition(sf::Vector2f(400, 500));
+				ventanaPrueba.draw(ganador);
+			}
+
+			int CL = worldRenderer.getLado(ventanaPrueba);
+
+			if (CL == 1)
+			{
+				compuGoles += 1;
+				worldRenderer.setLado(ventanaPrueba);
+				textoCompu.setString("Computadora: " + to_string(compuGoles));
+			}
+			else if (CL == 2)
+			{
+				jugadorGoles += 1;
+				worldRenderer.setLado(ventanaPrueba);
+				textoJugador.setString("Jugador: " + to_string(jugadorGoles));
+			}
+
 			worldRenderer.getPosition(ventanaPrueba);
 
 			worldRenderer.render(ventanaPrueba);
 			ventanaPrueba.draw(marcador);
+			ventanaPrueba.draw(textoCompu);
+			ventanaPrueba.draw(textoJugador);
 			ventanaPrueba.display();
 			world.update(deltatime);
 		}
@@ -476,4 +523,5 @@ void mostrarBT(int resultado[11][21], int matriz[11][21])
 		}
 	}
 }
+
 
