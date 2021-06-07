@@ -15,12 +15,33 @@ void WorldRenderer::renderBalls(sf::RenderWindow& ventanaPrueba) const {
 
 }
 
-void WorldRenderer::getPosition(sf::RenderWindow& ventanaPrueba) const{
+int WorldRenderer::getPositionX(sf::RenderWindow& ventanaPrueba) const{
 
 	for (Ball ball : world.getBalls()) {
-		cout << "X: " << ((int)(ball.getPosition().x/60))-1 << " " << "Y: " << ((int)ball.getPosition().y/60)-1 << endl;
+		return (int)ball.getPosition().x;
 	}
 }
+
+int WorldRenderer::getPositionY(sf::RenderWindow& ventanaPrueba) const {
+
+	for (Ball ball : world.getBalls()) {
+		return (int)ball.getPosition().y;
+	}
+}
+
+float WorldRenderer::getVelocityX(sf::RenderWindow& ventanaPrueba) const
+{
+	for (Ball ball : world.getBalls()) {
+		return ball.getVelocity().x;
+	}
+}
+float WorldRenderer::getVelocityY(sf::RenderWindow& ventanaPrueba) const
+{
+	for (Ball ball : world.getBalls()) {
+		return ball.getVelocity().y;
+	}
+}
+//cout << "X: " << ((int)(ball.getPosition().x / 60)) - 1 << " " << "Y: " << ((int)ball.getPosition().y / 60) - 1 << endl;
 
 int WorldRenderer::getLado(sf::RenderWindow& ventanaPrueba) const
 {

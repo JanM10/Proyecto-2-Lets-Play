@@ -14,9 +14,14 @@ public:
 
 	void render(sf::RenderWindow& ventanaPrueba) const;
 	void renderBalls(sf::RenderWindow& ventanaPrueba) const;
-	void getPosition(sf::RenderWindow& ventanaPrueba) const;
 	int getLado(sf::RenderWindow& ventanaPrueba) const;
 	void setLado(sf::RenderWindow& ventanaPrueba);
+
+	int getPositionX(sf::RenderWindow& ventanaPrueba) const;
+	int getPositionY(sf::RenderWindow& ventanaPrueba) const;
+
+	float getVelocityX(sf::RenderWindow& ventanaPrueba) const;
+	float getVelocityY(sf::RenderWindow& ventanaPrueba) const;
 
 private:
 	World& world;

@@ -38,6 +38,8 @@ void imprimitMatriz(int matriz[11][21]);
 
 void limpiarMatriz(int resultado[11][21]);
 
+void matrizRespaldo(int matriz[11][21]);
+
 void asignarColores(int matriz[11][21]);
 
 void mostrarBT(int resultado[11][21], int matriz[11][21]);
@@ -270,41 +272,8 @@ int main()
 
 		numerosRandom(cuadrosCancha2);
 
-		asignarColores(cuadrosCancha2);
+		matrizRespaldo(cuadrosCancha2);
 
-		////Src(source) es el inicio del pathfinding
-		Pair src(5, 10);
-
-		////Dest muestra el destino del pathfinding
-		Pair dest(5, 19);
-
-		PF.aStarSearch(cuadrosCancha2, src, dest);
-
-		//BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
-
-		//mostrarBT(resultado, cuadrosCancha2);
-
-		for (int x = 0; x < 11; x++)
-		{
-			for (int y = 0; y < 21; y++)
-			{
-				if (cuadrosCancha2[x][y] == 1)
-				{
-					cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los obstaculos del mapa 
-				}
-				else if (cuadrosCancha2[x][y] == 2) {
-					cuadradosCancha[x][y].setFillColor(Color::Red);//El rojo muestra las porterias
-				}
-				else if (cuadrosCancha2[x][y] == 3) {
-					cuadradosCancha[x][y].setFillColor(Color::Black);//El negro muestra los bordes del mapa
-				}
-				else if (cuadrosCancha2[x][y] == 4) {//El color blanco representa la ruta del pathfinding
-					cuadradosCancha[x][y].setFillColor(Color::White);
-				}
-
-			}
-
-		}
 
 		// run the program as long as the window is open
 		while (ventanaPrueba.isOpen())
@@ -344,6 +313,57 @@ int main()
 				
 			}
 			ventanaPrueba.clear(sf::Color::Black);
+
+			int posX = (worldRenderer.getPositionX(ventanaPrueba) / 60) - 1;
+			int posY = (worldRenderer.getPositionY(ventanaPrueba) / 60) - 1;
+
+			if (worldRenderer.getVelocityX(ventanaPrueba) <= 0.01 && worldRenderer.getVelocityY(ventanaPrueba) <= 0.01
+				|| worldRenderer.getVelocityX(ventanaPrueba) == 0 && worldRenderer.getVelocityY(ventanaPrueba) == 0)
+			{
+				worldRenderer.getPositionX(ventanaPrueba);
+				worldRenderer.getPositionY(ventanaPrueba);
+
+				cout << "X: " << posX << " " << "Y: " << posY << endl;
+
+				////Src(source) es el inicio del pathfinding
+				Pair src(posY, posX);
+				//Pair src(5, 10);
+				////Dest muestra el destino del pathfinding
+				Pair dest(5, 19);
+
+				PF.aStarSearch(cuadrosCancha2, src, dest);
+
+			}
+			else
+			{
+				asignarColores(cuadrosCancha2);
+			}
+
+			//BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
+
+			//mostrarBT(resultado, cuadrosCancha2);
+
+			for (int x = 0; x < 11; x++)
+			{
+				for (int y = 0; y < 21; y++)
+				{
+					if (cuadrosCancha2[x][y] == 1)
+					{
+						cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los obstaculos del mapa 
+					}
+					else if (cuadrosCancha2[x][y] == 2) {
+						cuadradosCancha[x][y].setFillColor(Color::Red);//El rojo muestra las porterias
+					}
+					else if (cuadrosCancha2[x][y] == 3) {
+						cuadradosCancha[x][y].setFillColor(Color::Black);//El negro muestra los bordes del mapa
+					}
+					else if (cuadrosCancha2[x][y] == 4) {//El color blanco representa la ruta del pathfinding
+						cuadradosCancha[x][y].setFillColor(Color::White);
+					}
+
+				}
+
+			}
 			
 			for (int x = 0; x < 11; x++)
 			{
@@ -394,7 +414,7 @@ int main()
 				textoJugador.setString("Jugador: " + to_string(jugadorGoles));
 			}
 
-			worldRenderer.getPosition(ventanaPrueba);
+
 
 			worldRenderer.render(ventanaPrueba);
 			ventanaPrueba.draw(marcador);
@@ -498,13 +518,25 @@ void limpiarMatriz(int resultado[11][21])
 	imprimitMatriz(resultado);
 }
 
-void asignarColores(int matriz[11][21])
+void matrizRespaldo(int matriz[11][21])
 {
 	for (int i = 0; i < 11; i++)
 	{
 		for (int j = 0; j < 21; j++)
 		{
 			colores[i][j] = matriz[i][j];
+		}
+	}
+	//imprimitMatriz(colores);
+}
+
+void asignarColores(int matriz[11][21])
+{
+	for (int i = 0; i < 11; i++)
+	{
+		for (int j = 0; j < 21; j++)
+		{
+			matriz[i][j] = colores[i][j];
 		}
 	}
 	//imprimitMatriz(colores);

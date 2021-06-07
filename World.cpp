@@ -12,8 +12,8 @@ World::~World() {
 void World::initBalls(size_t size) {
 	for (size_t i = 0; i < size; ++i) {
 
-		float x = 700;
-		float y = 400;
+		float x = 690;
+		float y = 390;
 		float radius = 25;
 
 		Ball ball = Ball(radius);
