@@ -57,7 +57,6 @@ void Pathfinding::tracePath(const array<array<cell, 21>, 11>& cellDetails, const
 	while (!Path.empty()) {
 		Pair p = Path.top();
 		Path.pop();
-		cout << "MATRIZ: " << matriz[p.first][p.second] << endl;
 		matriz[p.first][p.second] = 4;
 		printf("-> (%d,%d) ", p.first, p.second);
 

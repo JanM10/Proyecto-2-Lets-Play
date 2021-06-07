@@ -38,7 +38,6 @@ bool Backtracking::hallarCamino(int matriz[11][21], int Xini, int Yini, int Xfin
     if (Xini == Xfin && Yini == Yfin && matriz[Xini][Yini] == 0)
     {
         resultado[Xini][Yini] = 0;
-        imprimirSol(resultado);
         return true;
     }
 
@@ -53,28 +52,24 @@ bool Backtracking::hallarCamino(int matriz[11][21], int Xini, int Yini, int Xfin
         //Se mueve hacia la izquierda dentro de la matriz
         if (hallarCamino(matriz, Xini - 1, Yini, Xfin, Yfin, resultado) == true)//Izquierda
         {
-            //cout << "IZQUIERDA" << endl;
             return true;
         }
 
         //Se mueve hacia abajo dentro de la matriz
         if (hallarCamino(matriz, Xini, Yini - 1, Xfin, Yfin, resultado) == true)//Arriba
         {
-            //cout << "ARRIBA" << endl;
             return true;
         }
 
         //Se mueve hacia la derecha dentro de la matriz
         if (hallarCamino(matriz, Xini + 1, Yini, Xfin, Yfin, resultado) == true)//Derecha
         {
-            //cout << "DERECHA" << endl;
             return true;
         }
 
         //Se mueve hacia abajo dentro de la matriz
         if (hallarCamino(matriz, Xini, Yini + 1, Xfin, Yfin, resultado) == true)//Abajo
         {
-            //cout << "ABAJO" << endl;
             return true;
         }
 

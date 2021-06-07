@@ -20,7 +20,8 @@ void Ball::update(float deltatime) {
 	}
 
 	//Porteria izquierda
-	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() && getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {
+	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() &&
+		getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {
 		int gol = 1;
 		setLado(gol);
 		setPosition(700, 400);

@@ -38,17 +38,22 @@ void imprimitMatriz(int matriz[11][21]);
 
 void limpiarMatriz(int resultado[11][21]);
 
-void matrizRespaldo(int matriz[11][21]);
-
-void asignarColores(int matriz[11][21]);
+void asignarColores(int cuadrosCancha2[11][21]);
 
 void mostrarBT(int resultado[11][21], int matriz[11][21]);
+
+const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
+
 
 bool flag = true;//Para ver cual ventana se abre si el BP game o el Puzzle
 
 int cantObs;//Cantidad de obstaculos
 
 int compuGoles = 0, jugadorGoles = 0;
+
+bool jugador = true;
+
+int contador = 1;
 
 int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -63,19 +68,23 @@ int resultado[11][21]{
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
 
-int colores[11][21]{
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-		{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 
+int colores[11][21]{
+		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 },
+		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+		{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+		{ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
+		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } };
+
+int posicionesX[18];
+
+int posicionesY[18];
 
 // Creating a shortcut for int, int pair type
 typedef pair<int, int> Pair;
@@ -204,7 +213,7 @@ int main()
 		/////////////////////////////////////////////////////////////////////
 
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
-
+		//////////////////////////////////////////////////////////////
 		sf::Text marcador, textoCompu, textoJugador, ganador;
 		marcador.setFont(arial);
 		textoCompu.setFont(arial);
@@ -220,13 +229,11 @@ int main()
 
 		textoJugador.setString("Jugador: " + to_string(jugadorGoles));
 		textoJugador.setPosition(sf::Vector2f(900, 725));
-
+		///////////////////////////////////////////////////////////////////
 
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
-		ventanaPrueba.setFramerateLimit(60);
-
-		const int tamanoCancha = 22;//Cantidad maxima de cuadrados que puede haber por fila y columna
+		ventanaPrueba.setFramerateLimit(120);
 
 		vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
 
@@ -253,8 +260,11 @@ int main()
 				cuadradosCancha[x][y].setOutlineThickness(3.0f);
 				cuadradosCancha[x][y].setOutlineColor(Color::Black);
 				cuadradosCancha[x][y].setPosition((y + 1) * chanchaDim, (x + 1) * chanchaDim);
+
 			}
 		}
+
+
 
 		//Matriz de la cancha, cada numero representa algo a la hora de imprimirse
 		int cuadrosCancha2[11][21]{ 
@@ -272,8 +282,6 @@ int main()
 
 		numerosRandom(cuadrosCancha2);
 
-		matrizRespaldo(cuadrosCancha2);
-
 
 		// run the program as long as the window is open
 		while (ventanaPrueba.isOpen())
@@ -290,8 +298,18 @@ int main()
 				
 				switch (event.type) {
 
+				case sf::Event::KeyReleased:
+					switch (event.key.code) 
+					{
+						case sf::Keyboard::C:
+							jugador = false;
+							contador++;
+							//cout << "PRESIONO C" << endl;
+							break;
+					}
+
 				case sf::Event::MouseButtonPressed:
-					if (event.mouseButton.button == sf::Mouse::Left) {
+					if (event.mouseButton.button == sf::Mouse::Left && contador%2 != 0) {
 						sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
 
 						if (world.dragBall(sf::Vector2f((float)point.x, (float)point.y))) {
@@ -302,14 +320,14 @@ int main()
 					break;
 
 				case sf::Event::MouseButtonReleased:
-					if (event.mouseButton.button == sf::Mouse::Left) {
+					if (event.mouseButton.button == sf::Mouse::Left && contador % 2 != 0) {
 
 						world.setDraggedVelocity(line[1].position.x, line[1].position.y);
 						dragging = false;
 					}
 					break;
 				}
-
+				
 				
 			}
 			ventanaPrueba.clear(sf::Color::Black);
@@ -323,47 +341,124 @@ int main()
 				worldRenderer.getPositionX(ventanaPrueba);
 				worldRenderer.getPositionY(ventanaPrueba);
 
-				cout << "X: " << posX << " " << "Y: " << posY << endl;
+				worldRenderer.setVelocity(ventanaPrueba, 0, 0);
 
-				////Src(source) es el inicio del pathfinding
-				Pair src(posY, posX);
-				//Pair src(5, 10);
-				////Dest muestra el destino del pathfinding
-				Pair dest(5, 19);
+				//cout << "X: " << posX << " " << "Y: " << posY << endl;
 
-				PF.aStarSearch(cuadrosCancha2, src, dest);
-
-			}
-			else
-			{
 				asignarColores(cuadrosCancha2);
+
+				limpiarMatriz(resultado);
+
+				if (jugador && contador%2 != 0)
+				{
+
+					//Src(source) es el inicio del pathfinding
+					Pair src(posY, posX); //Pair src(5, 10);
+
+					//Dest muestra el destino del pathfinding
+					Pair dest(5, 19);
+
+					PF.aStarSearch(cuadrosCancha2, src, dest);
+
+				}
+				else
+				{
+
+					BT.hallarCamino(cuadrosCancha2, posY, posX, 5, 1, resultado);
+
+					mostrarBT(resultado, cuadrosCancha2);
+
+					jugador = true;
+				}
+
+				//system("cls");
+			
 			}
 
-			//BT.hallarCamino(cuadrosCancha2, 5, 10, 5, 1, resultado);
 
-			//mostrarBT(resultado, cuadrosCancha2);
+
 
 			for (int x = 0; x < 11; x++)
 			{
 				for (int y = 0; y < 21; y++)
 				{
-					if (cuadrosCancha2[x][y] == 1)
+					if (cuadrosCancha2[x][y] == 0)
+					{
+						cuadradosCancha[x][y].setFillColor(Color::Green);//El azul muestra los obstaculos del mapa 
+					}
+					else if (cuadrosCancha2[x][y] == 1)
 					{
 						cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los obstaculos del mapa 
 					}
-					else if (cuadrosCancha2[x][y] == 2) {
+					else if (cuadrosCancha2[x][y] == 2) 
+					{
 						cuadradosCancha[x][y].setFillColor(Color::Red);//El rojo muestra las porterias
 					}
-					else if (cuadrosCancha2[x][y] == 3) {
+					else if (cuadrosCancha2[x][y] == 3) 
+					{
 						cuadradosCancha[x][y].setFillColor(Color::Black);//El negro muestra los bordes del mapa
 					}
-					else if (cuadrosCancha2[x][y] == 4) {//El color blanco representa la ruta del pathfinding
+					else if (cuadrosCancha2[x][y] == 4) //El color blanco representa la ruta del pathfinding
+					{
 						cuadradosCancha[x][y].setFillColor(Color::White);
 					}
-
 				}
-
 			}
+			int k = 0;
+			for (int x = 0; x < 11; x++)
+			{
+				for (int y = 0; y < 21; y++)
+				{
+					if (cuadradosCancha[x][y].getFillColor() == Color::Blue)
+					{
+						posicionesX[k] = cuadradosCancha[x][y].getPosition().x + 60;
+						posicionesY[k] = cuadradosCancha[x][y].getPosition().y + 60;
+						k++;
+					}
+				}
+			}
+
+			for (int i = 0; i < 18; i++)
+			{
+				if (worldRenderer.getPositionX(ventanaPrueba) >= posicionesX[i]-60  + worldRenderer.getRadius(ventanaPrueba) &&
+					worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba) &&
+					worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i]-60 - worldRenderer.getRadius(ventanaPrueba) &&
+					worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i] - worldRenderer.getRadius(ventanaPrueba))
+				{
+
+					if (worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba))
+					{
+						worldRenderer.setPosition(ventanaPrueba ,posicionesX[i] + worldRenderer.getRadius(ventanaPrueba), worldRenderer.getPositionY(ventanaPrueba));
+						worldRenderer.setVelocity(ventanaPrueba, -worldRenderer.getVelocityX(ventanaPrueba), worldRenderer.getVelocityY(ventanaPrueba));
+						cout << endl;
+						cout << "CHOCA" << endl;
+					}
+
+					//if (getPosition().x < 120 + getRadius()) {
+					//	setPosition(120 + getRadius(), getPosition().y);
+					//	setVelocity(-getVelocity().x, getVelocity().y);
+					//}
+					//else if (getPosition().x > 1260 - getRadius()) {
+					//	setPosition(1260 - getRadius(), getPosition().y);
+					//	setVelocity(-getVelocity().x, getVelocity().y);
+					//}
+
+					//if (getPosition().y < 120 + getRadius()) {
+					//	setPosition(getPosition().x, 120 + getRadius());
+					//	setVelocity(getVelocity().x, -getVelocity().y);
+					//}
+					//else if (getPosition().y > 660 - getRadius()) {
+					//	setPosition(getPosition().x, 660 - getRadius());
+					//	setVelocity(getVelocity().x, -getVelocity().y);
+					//}
+				}
+			}
+
+
+
+			//cout << endl;
+			//cout << "X: " << cuadradosCancha[1][1].getPosition().x << " " << "Y: " << cuadradosCancha[1][1].getPosition().y;
+			//imprimitMatriz(cuadrosCancha2);
 			
 			for (int x = 0; x < 11; x++)
 			{
@@ -372,6 +467,10 @@ int main()
 					ventanaPrueba.draw(cuadradosCancha[x][y]);
 				}
 			}
+
+
+
+
 			if (dragging) {
 				sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
 
@@ -473,9 +572,10 @@ void numerosRandom(int matriz[11][21]) {
 	{
 		matriz[filas[x]][columnas[x]] = 1;
 		matriz[filas[x]][20-columnas[x]] = 1;
-	}
 
-	imprimitMatriz(matriz);
+		colores[filas[x]][columnas[x]] = 1;
+		colores[filas[x]][20 - columnas[x]] = 1;
+	}
 
 }
 
@@ -515,31 +615,17 @@ void limpiarMatriz(int resultado[11][21])
 			resultado[i][j] = 1;
 		}
 	}
-	imprimitMatriz(resultado);
 }
 
-void matrizRespaldo(int matriz[11][21])
+void asignarColores(int cuadrosCancha2[11][21])
 {
 	for (int i = 0; i < 11; i++)
 	{
 		for (int j = 0; j < 21; j++)
 		{
-			colores[i][j] = matriz[i][j];
+			cuadrosCancha2[i][j] = colores[i][j];
 		}
 	}
-	//imprimitMatriz(colores);
-}
-
-void asignarColores(int matriz[11][21])
-{
-	for (int i = 0; i < 11; i++)
-	{
-		for (int j = 0; j < 21; j++)
-		{
-			matriz[i][j] = colores[i][j];
-		}
-	}
-	//imprimitMatriz(colores);
 }
 
 void mostrarBT(int resultado[11][21], int matriz[11][21])
@@ -554,6 +640,7 @@ void mostrarBT(int resultado[11][21], int matriz[11][21])
 			}
 		}
 	}
+
 }
 
 

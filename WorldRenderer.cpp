@@ -41,6 +41,25 @@ float WorldRenderer::getVelocityY(sf::RenderWindow& ventanaPrueba) const
 		return ball.getVelocity().y;
 	}
 }
+void WorldRenderer::setVelocity(sf::RenderWindow& ventanaPrueba, float x, float y) const
+{
+	for (Ball ball : world.getBalls()) {
+		ball.setVelocity(x, y);
+	}
+}
+
+float WorldRenderer::getRadius(sf::RenderWindow& ventanaPrueba) const
+{
+	for (Ball ball : world.getBalls()) {
+		return ball.getRadius();
+	}
+}
+void WorldRenderer::setPosition(sf::RenderWindow& ventanaPrueba, int x, int y) const
+{
+	for (Ball ball : world.getBalls()) {
+		ball.setPosition(x, y);
+	}
+}
 //cout << "X: " << ((int)(ball.getPosition().x / 60)) - 1 << " " << "Y: " << ((int)ball.getPosition().y / 60) - 1 << endl;
 
 int WorldRenderer::getLado(sf::RenderWindow& ventanaPrueba) const

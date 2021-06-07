@@ -23,6 +23,12 @@ public:
 	float getVelocityX(sf::RenderWindow& ventanaPrueba) const;
 	float getVelocityY(sf::RenderWindow& ventanaPrueba) const;
 
+	void setVelocity(sf::RenderWindow& ventanaPrueba, float x, float y) const;
+
+	float getRadius(sf::RenderWindow& ventanaPrueba) const;
+
+	void setPosition(sf::RenderWindow& ventanaPrueba, int x, int y) const;
+
 private:
 	World& world;
 };
