@@ -29,6 +29,8 @@ public:
 
 	void setPosition(sf::RenderWindow& ventanaPrueba, int x, int y) const;
 
+	sf::FloatRect getGlobalBounds(sf::RenderWindow& ventanaPrueba) const;
+
 private:
 	World& world;
 };

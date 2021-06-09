@@ -30,10 +30,14 @@ public:
 	int getLado() const;
 	void setLado(int gol);
 
-private:
+	sf::FloatRect getBounds() const;
+
 	sf::Vector2f velocity;
 	sf::Vector2f acceleration;
 	sf::CircleShape circleShape;
+
+private:
+
 
 	bool dragged;
 	float mass;

@@ -22,10 +22,12 @@
 #include "World.h"
 #include "WorldRenderer.h"
 #include "Ball.h"
+#include "Matriz.h"
 
 //Instancias de las clases Backtracking y Pathfinding
 Backtracking BT;
 Pathfinding PF;
+Matriz Obstaculos;
 
 using namespace std;
 
@@ -157,7 +159,7 @@ int main()
 		window.display();
 	}
 
-	//Si el flag es falso se abre la ventana del BP Game
+	//Si el flag es falso se abre la ventana del BP Game en caso contrario abre el Puzzle game
 	if (flag == false)
 	{
 		sf::RenderWindow obstaculos(sf::VideoMode(400, 200), "Cuantos Obstaculos");
@@ -210,6 +212,7 @@ int main()
 
 
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
+
 		//////////////////////////////////////////////////////////////
 		//Textos que van en pantalla
 		sf::Text marcador, textoCompu, textoJugador, ganador;
@@ -233,9 +236,11 @@ int main()
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
 		ventanaPrueba.setFramerateLimit(120);
 
-		vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
+		
+		//vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
 
-		cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
+		//cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
+		
 
 		World world;
 		WorldRenderer worldRenderer(world);
@@ -247,17 +252,19 @@ int main()
 		float deltatime = 0.f;
 		sf::Clock clock;
 
+		Obstaculos.setResize();
+
 		//Este for rellena la el vector con los cuadrados que se van a mostrar en pantalla, junto con sus colores y rayas
 		for (int x = 0; x < 11; x++)
 		{
-			cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
+			Obstaculos.cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
 			for (int y = 0; y < 21; y++)
 			{
-				cuadradosCancha[x][y].setSize(sf::Vector2f(chanchaDim, chanchaDim));
-				cuadradosCancha[x][y].setFillColor(Color::Green);
-				cuadradosCancha[x][y].setOutlineThickness(3.0f);
-				cuadradosCancha[x][y].setOutlineColor(Color::Black);
-				cuadradosCancha[x][y].setPosition((y + 1) * chanchaDim, (x + 1) * chanchaDim);
+				Obstaculos.cuadradosCancha[x][y].setSize(sf::Vector2f(chanchaDim, chanchaDim));
+				Obstaculos.cuadradosCancha[x][y].setFillColor(Color::Green);
+				Obstaculos.cuadradosCancha[x][y].setOutlineThickness(3.0f);
+				Obstaculos.cuadradosCancha[x][y].setOutlineColor(Color::Black);
+				Obstaculos.cuadradosCancha[x][y].setPosition((y + 1) * chanchaDim, (x + 1) * chanchaDim);
 
 			}
 		}
@@ -276,19 +283,18 @@ int main()
 		{ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 },
 		{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 } };
 
-		numerosRandom(cuadrosCancha2);
+		numerosRandom(cuadrosCancha2);//Se asignan los obstaculos en pantalla
 
+		
 
-		// run the program as long as the window is open
+		//Se abre la ventana del BP GAME
 		while (ventanaPrueba.isOpen())
 		{
 			deltatime = clock.restart().asSeconds();
 
-			// check all the window's events that were triggered since the last iteration of the loop
 			sf::Event event;
 			while (ventanaPrueba.pollEvent(event))
 			{
-				// "close requested" event: we close the window
 				if (event.type == sf::Event::Closed)
 					ventanaPrueba.close();
 				
@@ -374,7 +380,6 @@ int main()
 			}
 
 
-
 			//Se le asignas los colores a la cancha
 			for (int x = 0; x < 11; x++)
 			{
@@ -382,57 +387,129 @@ int main()
 				{
 					if (cuadrosCancha2[x][y] == 0)
 					{
-						cuadradosCancha[x][y].setFillColor(Color::Green);//El azul muestra los obstaculos del mapa 
+						Obstaculos.cuadradosCancha[x][y].setFillColor(Color::Green);//El azul muestra los obstaculos del mapa 
 					}
 					else if (cuadrosCancha2[x][y] == 1)
 					{
-						cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los obstaculos del mapa 
+						Obstaculos.cuadradosCancha[x][y].setFillColor(Color::Blue);//El azul muestra los obstaculos del mapa 
 					}
 					else if (cuadrosCancha2[x][y] == 2) 
 					{
-						cuadradosCancha[x][y].setFillColor(Color::Red);//El rojo muestra las porterias
+						Obstaculos.cuadradosCancha[x][y].setFillColor(Color::Red);//El rojo muestra las porterias
 					}
 					else if (cuadrosCancha2[x][y] == 3) 
 					{
-						cuadradosCancha[x][y].setFillColor(Color::Black);//El negro muestra los bordes del mapa
+						Obstaculos.cuadradosCancha[x][y].setFillColor(Color::Black);//El negro muestra los bordes del mapa
 					}
 					else if (cuadrosCancha2[x][y] == 4) //El color blanco representa la ruta del pathfinding
 					{
-						cuadradosCancha[x][y].setFillColor(Color::White);
+						Obstaculos.cuadradosCancha[x][y].setFillColor(Color::White);
 					}
 				}
 			}
+			Obstaculos.setObsPos();
 			int k = 0;
 			//Se guardan las posiciones exactas de los obstaculos para las colosiones
 			for (int x = 0; x < 11; x++)
 			{
 				for (int y = 0; y < 21; y++)
 				{
-					if (cuadradosCancha[x][y].getFillColor() == Color::Blue)
+					if (Obstaculos.cuadradosCancha[x][y].getFillColor() == Color::Blue)
 					{
-						posicionesX[k] = cuadradosCancha[x][y].getPosition().x + 60;
-						posicionesY[k] = cuadradosCancha[x][y].getPosition().y + 60;
+						posicionesX[k] = Obstaculos.cuadradosCancha[x][y].getPosition().x + 60;
+						posicionesY[k] = Obstaculos.cuadradosCancha[x][y].getPosition().y + 60;
 						k++;
 					}
 				}
 			}
 
-			//Se agregan las posiciones de los obstaculos para que la bola rebote en los puntos especificados
-			for (int i = 0; i < 18; i++)
-			{
-				if (worldRenderer.getPositionX(ventanaPrueba) >= posicionesX[i]-60  + worldRenderer.getRadius(ventanaPrueba) &&
-					worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba) &&
-					worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i]-60 - worldRenderer.getRadius(ventanaPrueba) &&
-					worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i] - worldRenderer.getRadius(ventanaPrueba))
-				{
+			//for (int i = 0; i < 18; i++)
+			//{
+			//	cout << "POSX: " << posicionesX[i] << endl;
+			//	cout << "POSY: " << posicionesY[i] << endl;
+			//}
 
-					if (worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba))
-					{
-						worldRenderer.setPosition(ventanaPrueba ,posicionesX[i] + worldRenderer.getRadius(ventanaPrueba), worldRenderer.getPositionY(ventanaPrueba));
-						worldRenderer.setVelocity(ventanaPrueba, -worldRenderer.getVelocityX(ventanaPrueba), worldRenderer.getVelocityY(ventanaPrueba));
-						cout << endl;
-						cout << "CHOCA" << endl;
-					}
+			//Se agregan las posiciones de los obstaculos para que la bola rebote en los puntos especificados
+			//for (int i = 0; i < 18; i++)
+			//{
+			//	//if (worldRenderer.getGlobalBounds(ventanaPrueba).intersects(cuadradosCancha[i][i].getGlobalBounds()))
+			//	if (worldRenderer.getPositionX(ventanaPrueba) >= posicionesX[i]-60  + worldRenderer.getRadius(ventanaPrueba) &&
+			//		worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba) &&
+			//		worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i]-60 - worldRenderer.getRadius(ventanaPrueba) &&
+			//		worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i] - worldRenderer.getRadius(ventanaPrueba))
+			//	{
+
+			//		if (posicionesX[i] >= worldRenderer.getPositionX(ventanaPrueba) &&  //arriba
+			//			posicionesX[i] <= worldRenderer.getPositionX(ventanaPrueba) &&
+			//			posicionesY[i] >= worldRenderer.getPositionY(ventanaPrueba) &&
+			//			posicionesY[i] <= worldRenderer.getPositionY(ventanaPrueba))
+			//		{
+			//			worldRenderer.setPosition(ventanaPrueba,
+			//				 worldRenderer.getPositionX(ventanaPrueba), posicionesY[i] + worldRenderer.getRadius(ventanaPrueba));
+
+			//			worldRenderer.setVelocity(ventanaPrueba,
+			//				-worldRenderer.getVelocityX(ventanaPrueba), worldRenderer.getVelocityY(ventanaPrueba));
+			//				cout << endl;
+			//		cout << "CHOCA Arriba" << endl;
+			//		}
+			//		if (posicionesX[i] >= worldRenderer.getPositionX(ventanaPrueba) &&  //izquierda
+			//			posicionesX[i] <= worldRenderer.getPositionX(ventanaPrueba) &&
+			//			posicionesY[i] >= worldRenderer.getPositionY(ventanaPrueba)&&
+			//			posicionesY[i] <= worldRenderer.getPositionY(ventanaPrueba))
+			//		{
+
+			//			worldRenderer.setPosition(ventanaPrueba,
+			//				posicionesX[i] + worldRenderer.getRadius(ventanaPrueba), worldRenderer.getPositionY(ventanaPrueba));
+
+			//			worldRenderer.setVelocity(ventanaPrueba,
+			//				-worldRenderer.getVelocityX(ventanaPrueba), worldRenderer.getVelocityY(ventanaPrueba));
+			//				cout << endl;
+			//		cout << "CHOCA izquierda" << endl; 
+			//		}
+			//		if (posicionesX[i] >= worldRenderer.getPositionX(ventanaPrueba) &&  //derecha
+			//			posicionesX[i] <= worldRenderer.getPositionX(ventanaPrueba) &&
+			//			posicionesY[i] >= worldRenderer.getPositionY(ventanaPrueba) &&
+			//			posicionesY[i] <= worldRenderer.getPositionY(ventanaPrueba))
+			//		{
+
+			//			worldRenderer.setPosition(ventanaPrueba,
+			//				posicionesX[i] - worldRenderer.getRadius(ventanaPrueba), worldRenderer.getPositionY(ventanaPrueba));
+
+			//			worldRenderer.setVelocity(ventanaPrueba,
+			//				-worldRenderer.getVelocityX(ventanaPrueba), worldRenderer.getVelocityY(ventanaPrueba));
+			//				cout << endl;
+			//		cout << "CHOCA derecha " << endl;
+			//		}
+			//		if (posicionesX[i] >= worldRenderer.getPositionX(ventanaPrueba) &&  //dol
+			//			posicionesX[i] <= worldRenderer.getPositionX(ventanaPrueba) &&
+			//			posicionesY[i] >= worldRenderer.getPositionY(ventanaPrueba) &&
+			//			posicionesY[i] <= worldRenderer.getPositionY(ventanaPrueba))
+						
+			//		{
+
+			//			worldRenderer.setPosition(ventanaPrueba,
+			//				 worldRenderer.getPositionX(ventanaPrueba), posicionesY[i] - worldRenderer.getRadius(ventanaPrueba));
+
+			//			worldRenderer.setVelocity(ventanaPrueba,
+			//				worldRenderer.getVelocityX(ventanaPrueba), -worldRenderer.getVelocityY(ventanaPrueba));
+			//				cout << endl;
+			//		cout << "CHOCA Abajo" << endl;
+			//		}					
+
+					
+			//	}
+
+				//if (worldRenderer.getPositionX(ventanaPrueba) >= posicionesX[i]-60  + worldRenderer.getRadius(ventanaPrueba) &&
+				//	worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba) &&
+				//	worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i]-60 - worldRenderer.getRadius(ventanaPrueba) &&
+				//	worldRenderer.getPositionY(ventanaPrueba) <= posicionesY[i] - worldRenderer.getRadius(ventanaPrueba))
+				//{
+				//	if (worldRenderer.getPositionX(ventanaPrueba) <= posicionesX[i] + worldRenderer.getRadius(ventanaPrueba))
+				//	{
+				//		
+				//		
+				//		
+				//	}
 
 					//if (getPosition().x < 120 + getRadius()) {
 					//	setPosition(120 + getRadius(), getPosition().y);
@@ -451,8 +528,8 @@ int main()
 					//	setPosition(getPosition().x, 660 - getRadius());
 					//	setVelocity(getVelocity().x, -getVelocity().y);
 					//}
-				}
-			}
+				//}
+			//}
 
 
 
@@ -465,11 +542,11 @@ int main()
 			{
 				for (int y = 0; y < 21; y++)
 				{
-					ventanaPrueba.draw(cuadradosCancha[x][y]);
+					ventanaPrueba.draw(Obstaculos.cuadradosCancha[x][y]);
 				}
 			}
 
-
+			//Muestra en pantalla hacia donde se jala el balon
 			if (dragging) {
 				sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
 
@@ -523,8 +600,8 @@ int main()
 			world.update(deltatime);
 		}
 
-	}else 
-{
+	}
+	else {
 	/*
 	* 
 	* 
@@ -617,6 +694,7 @@ void limpiarMatriz(int resultado[11][21])
 	}
 }
 
+//Asigna los valores de la matriz de respaldo a la original
 void asignarColores(int cuadrosCancha2[11][21])
 {
 	for (int i = 0; i < 11; i++)
@@ -628,6 +706,7 @@ void asignarColores(int cuadrosCancha2[11][21])
 	}
 }
 
+//Se muestra los datos del backtracking
 void mostrarBT(int resultado[11][21], int matriz[11][21])
 {
 	for (int i = 0; i < 11; i++)
