@@ -80,6 +80,18 @@ sf::FloatRect WorldRenderer::getGlobalBounds(sf::RenderWindow& ventanaPrueba) co
 		return ball.getBounds();
 	}
 }
+
+void WorldRenderer::setPositions(sf::RenderWindow& ventanaPrueba, int positionX[18], int positionY[18]) const
+{
+	for (Ball ball : world.getBalls()) {
+		for (int i = 0; i < 18; i++)
+		{
+			ball.posicionesX[i] = positionX[i];
+			ball.posicionesY[i] = positionY[i];
+		}
+	}
+}
+
 //cout << "X: " << ((int)(ball.getPosition().x / 60)) - 1 << " " << "Y: " << ((int)ball.getPosition().y / 60) - 1 << endl;
 
 //Devuelve el lado donde se metio gol

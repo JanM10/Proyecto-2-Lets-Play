@@ -31,6 +31,8 @@ public:
 
 	sf::FloatRect getGlobalBounds(sf::RenderWindow& ventanaPrueba) const;
 
+	void setPositions(sf::RenderWindow& ventanaPrueba, int positionX[18], int positionY[18]) const;
+
 private:
 	World& world;
 };

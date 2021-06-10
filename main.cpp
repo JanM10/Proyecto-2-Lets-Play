@@ -407,7 +407,7 @@ int main()
 					}
 				}
 			}
-			Obstaculos.setObsPos();
+			
 			int k = 0;
 			//Se guardan las posiciones exactas de los obstaculos para las colosiones
 			for (int x = 0; x < 11; x++)
@@ -422,9 +422,11 @@ int main()
 					}
 				}
 			}
+			worldRenderer.setPositions(posicionesX, posicionesY);
 
 			//for (int i = 0; i < 18; i++)
 			//{
+			//	cout << endl;
 			//	cout << "POSX: " << posicionesX[i] << endl;
 			//	cout << "POSY: " << posicionesY[i] << endl;
 			//}
@@ -602,10 +604,167 @@ int main()
 
 	}
 	else {
-	/*
-	* 
-	* 
-	*/
+	sf::RenderWindow puzzle(sf::VideoMode(600, 200), "Puzzle Game");
+
+	bool openPuzzle;
+	int image;
+	sf::Font arial;
+	arial.loadFromFile("arial.ttf");
+	Textbox playerInput(15, sf::Color::White, true);
+
+	playerInput.setFont(arial);
+	playerInput.setPosition({ 100, 100 });
+	playerInput.setLimit(true, 1);
+
+
+	Textbox string(15, sf::Color::White, false);
+
+	string.setString("Escriba de cuanto quiere el puzzle \n (el numero que ingrese sera de una matriz de n x n, siendo n el numero ingresado; \n solo hay matrices de 2, 3 ,4 y 5)");
+	string.setFont(arial);
+	string.setPosition({ 10, 10 });
+
+	Textbox warning(15, sf::Color::Red, false);
+
+	warning.setString("Solo se pueden elegir matrices de 2x2, 3x3, 4x4 o 5x5");
+	warning.setFont(arial);
+	warning.setPosition({ 10, 1000 });
+
+
+	///////////////////////////////////////////////////////////////////////
+	//El programa sigue corriendo siempre y cuando la ventana este abierta
+	while (puzzle.isOpen())
+	{
+
+		//Revisa todos los eventos que se activaron desde la ultima iteracion 
+		Event event;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+			image = playerInput.getText().front() - 48;
+			if (image > 6 || image < 2) {
+				warning.setPosition({ 10, 65 });
+			}
+			else {
+				openPuzzle = true;
+				puzzle.close();
+			}
+
+		}
+		while (puzzle.pollEvent(event)) {
+
+			//Se cierra la ventana
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				openPuzzle = false;
+				puzzle.close();
+
+			case::Event::TextEntered:
+				playerInput.typedOn(event);
+			}
+
+
+		}
+
+		puzzle.clear();
+		string.drawTo(puzzle);
+		warning.drawTo(puzzle);
+		playerInput.drawTo(puzzle);
+		puzzle.display();
+	}
+	////////
+
+	if (openPuzzle) {
+
+		RenderWindow app(VideoMode(600, 600), "Genetic Puzzle!");
+		app.setFramerateLimit(60);
+		int gridSize = 0;
+
+
+
+		Texture t;
+		if (image == 2) {
+			t.loadFromFile("images/2x2.png");
+			gridSize = 2;
+		}
+		if (image == 3) {
+			t.loadFromFile("images/3x3.png");
+			gridSize = 3;
+		}
+		if (image == 4) {
+			t.loadFromFile("images/4x4.png");
+			gridSize = 4;
+		}
+		if (image == 5) {
+			t.loadFromFile("images/red.png");
+			gridSize = 5;
+		}
+		if (image == 6) {
+			t.loadFromFile("images/smiley.png");
+			gridSize = 4;
+		}
+
+		int grid[7][7];
+		Sprite sprite[25];
+		memset(grid, -1, sizeof(int) * (gridSize + 2) * (gridSize + 2)); // initialize array to -1
+		int w = 64;
+
+
+
+		// initialize puzzle
+		int n = 0;
+		for (int i = 0; i < gridSize; i++)
+			for (int j = 0; j < gridSize; j++)
+			{
+				sprite[n].setTexture(t);
+				sprite[n].setTextureRect(IntRect(j * w, i * w, w, w));
+				grid[i + 1][j + 1] = n;
+				n++;
+			}
+		while (app.isOpen())
+		{
+			Event e;
+			while (app.pollEvent(e))
+			{
+				if (e.type == Event::Closed)
+					app.close();
+
+				if (e.type == Event::MouseButtonPressed)
+					if (e.key.code == Mouse::Left)
+					{
+						Vector2i pos = Mouse::getPosition(app);
+						int x = pos.y / w + 1;
+						int y = pos.x / w + 1;
+						int dx = 0;
+						int dy = 0;
+
+						if (grid[x + 1][y] == ((gridSize * gridSize) - 1)) { dx = 1; }
+						if (grid[x - 1][y] == (gridSize * gridSize) - 1) { dx = -1; }
+						if (grid[x][y + 1] == (gridSize * gridSize) - 1) { dy = 1; }
+						if (grid[x][y - 1] == (gridSize * gridSize) - 1) { dy = -1; }
+
+						// exchange blank and grid
+						int n = grid[x][y];
+						grid[x][y] = ((gridSize * gridSize) - 1);
+						grid[x + dx][y + dy] = n;
+
+					}
+
+			}
+
+			app.clear(Color::Color(82, 82, 82));
+			for (int i = 0; i < gridSize; i++)
+				for (int j = 0; j < gridSize; j++)
+				{
+					int n = grid[i + 1][j + 1];
+					sprite[n].setPosition(j * w, i * w);
+					app.draw(sprite[n]);
+				}
+
+			app.display();
+
+		}
+
+	}
+	}
 	}
 }
 
