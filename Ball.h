@@ -36,11 +36,8 @@ public:
 	sf::Vector2f acceleration;
 	sf::CircleShape circleShape;
 
-	vector<vector<sf::RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
-	int posicionesX[18];
-	int posicionesY[18];
-	void setObsPos();
-	void setResize();
+	int posicionesX[18] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	int posicionesY[18] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
 
 private:
 

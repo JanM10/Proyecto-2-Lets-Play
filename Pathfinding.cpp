@@ -38,7 +38,7 @@ double Pathfinding::calculateHValue(const Pair& src, const Pair& dest)
 //Esta funcion imprime el camino hacia el destino en caso de que si haya
 void Pathfinding::tracePath(const array<array<cell, 21>, 11>& cellDetails, const Pair& dest, int matriz[11][21])
 {
-	printf("\nEl camino es ");
+	//printf("\nEl camino es ");
 
 	stack<Pair> Path;
 
@@ -58,7 +58,7 @@ void Pathfinding::tracePath(const array<array<cell, 21>, 11>& cellDetails, const
 		Pair p = Path.top();
 		Path.pop();
 		matriz[p.first][p.second] = 4;
-		printf("-> (%d,%d) ", p.first, p.second);
+		//printf("-> (%d,%d) ", p.first, p.second);
 
 	}
 }
@@ -148,8 +148,7 @@ void Pathfinding::aStarSearch(int matriz[11][21], const Pair& src, const Pair& d
 							[neighbour.second]
 						.parent
 							= { i, j };
-						printf("The destination cell is "
-							"found\n");
+						//printf("The destination cell is found\n");
 						tracePath(cellDetails, dest, matriz);
 						return;
 					}

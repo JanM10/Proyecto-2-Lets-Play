@@ -1,8 +1,9 @@
 #include "Ball.h"
-#include "Matriz.h"
+#include <fstream>
+#include <string>
+ifstream archivo;
+ifstream archivo2;
 
-Matriz Obs;
-int k = 0;
 
 Ball::Ball(float radius) : dragged(false), mass(radius * 20.f), circleShape(sf::CircleShape(radius)) {
 	circleShape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
@@ -60,23 +61,41 @@ void Ball::update(float deltatime) {
 
 	//for (int i = 0; i < 18; i++)
 	//{
-	//	cout << "X: " << Obs.getPositionX(i) << endl;
-	//	cout << "Y: " << Obs.getPositionY(i) << endl;
+	//	cout << "X: " << this->posicionesX[i] << endl;
+	//	cout << "Y: " << this->posicionesY[i] << endl;
 	//}
-	Obs.setObsPos();
+
+
+
+	archivo.open("rutas.txt");
+	archivo2.open("rutas2.txt");
+	string texto;
+	int number;
+	int number2;
+	int k = 0;
+	while (archivo >> number && archivo2 >> number2)
+	{
+		this->posicionesX[k] = number;
+		cout << "X: " << this->posicionesX[k] << endl;
+		this->posicionesY[k] = number2;
+		cout << "Y: " << this->posicionesY[k] << endl;
+		k++;
+	}
+	archivo.close();
+
 	for (int i = 0; i < 18; i++)
 	{
-		//if (getBounds().intersects(Obs.cuadradosCancha[1][1].getGlobalBounds()))
-		//if (getPosition().x >= Obs.getPositionX(i) - 60 + getRadius() &&
-		//	getPosition().x <= Obs.getPositionX(i) + getRadius() &&
-		//	getPosition().y <= Obs.getPositionY(i) - 60 - getRadius() &&
-		//	getPosition().y <= Obs.getPositionY(i) - getRadius())
-		//{
+		//cout << posicionesX[i] << endl;
+		//cout << posicionesY[i] << endl;
 
-		if (getPosition().x < Obs.getPositionX(i) + getRadius()) {//Borde izquierdo
-			setPosition(Obs.getPositionX(i) + getRadius(), getPosition().y);
+		if (getPosition().x >= this->posicionesX[i] && getPosition().x <= this->posicionesX[i] +60 &&
+			getPosition().y >= this->posicionesY[i] && getPosition().y <= this->posicionesY[i] +60)
+		{
+			setPosition(this->posicionesX[i] + getRadius(), getPosition().y);
 			setVelocity(-getVelocity().x, getVelocity().y);
+			cout << "CHOCA" << endl;
 		}
+
 
 
 			//if (Obs.getPositionX(i) >= getPosition().x &&  //arriba
@@ -171,31 +190,6 @@ void Ball::setLado(int gol)
 sf::FloatRect Ball::getBounds() const
 {
 	return circleShape.getGlobalBounds();
-}
-
-void Ball::setObsPos()
-{
-	for (int x = 0; x < 11; x++)
-	{
-		for (int y = 0; y < 21; y++)
-		{
-			if (cuadradosCancha[x][y].getFillColor() == sf::Color::Blue)
-			{
-				cout << endl;
-				posicionesX[k] = cuadradosCancha[x][y].getPosition().x;
-				cout << "POSX: " << posicionesX[k] << endl;
-				posicionesY[k] = cuadradosCancha[x][y].getPosition().y;
-				cout << "POSY: " << posicionesY[k] << endl;
-				k++;
-			}
-		}
-	}
-	k = 0;
-}
-
-void Ball::setResize()
-{
-	cuadradosCancha.resize(60, vector<sf::RectangleShape>());
 }
 
 //Se asigna una velocidad
