@@ -85,72 +85,52 @@ void Ball::update(float deltatime) {
 
 	for (int i = 0; i < 18; i++)
 	{
-		//cout << posicionesX[i] << endl;
-		//cout << posicionesY[i] << endl;
 
-		if (getPosition().x >= this->posicionesX[i] && getPosition().x <= this->posicionesX[i] +60 &&
-			getPosition().y >= this->posicionesY[i] && getPosition().y <= this->posicionesY[i] +60)
-		{
-			setPosition(this->posicionesX[i] + getRadius(), getPosition().y);
-			setVelocity(-getVelocity().x, getVelocity().y);
-			cout << "CHOCA" << endl;
-		}
+		
 
+			if (getPosition().x >= this->posicionesX[i] && getPosition().x <= this->posicionesX[i] + 60 &&
+				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y - getRadius() <= this->posicionesY[i] + 60)
+			{
+				setVelocity(getVelocity().x, -getVelocity().y);
+			}
+			
+			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x + getRadius() <= this->posicionesX[i] + 60 &&
+				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y + getRadius() <= this->posicionesY[i])
+			{
+				setVelocity(getVelocity().x, -getVelocity().y);
+			}
 
+			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x - getRadius() <= this->posicionesX[i] + 60 && //Izquierda/Lewy
+				getPosition().y >= this->posicionesY[i] && getPosition().y <= this->posicionesY[i] + 60)
+			{
+				setVelocity(-getVelocity().x, getVelocity().y);
+			}
 
-			//if (Obs.getPositionX(i) >= getPosition().x &&  //arriba
-			//	Obs.getPositionX(i) <= getPosition().x &&
-			//	Obs.getPositionY(i) >= getPosition().y &&
-			//	Obs.getPositionY(i) <= getPosition().y)
+			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x + getRadius() <= this->posicionesX[i] && //Derecha/Dewy
+				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y + getRadius() <= this->posicionesY[i] + 60)
+			{
+				setVelocity(-getVelocity().x, getVelocity().y);
+			}
+
+			//// Esquinas
+			//if (((int)(getPosition().x + getRadius())) == this->posicionesX[i] && ((int)(getPosition().y + getRadius())) == this->posicionesY[i])
 			//{
-			//	setPosition(getPosition().x, Obs.getPositionY(i) + getRadius());
-
-			//	setVelocity(-getVelocity().x, getVelocity().y);
-			//	cout << endl;
-			//	cout << "CHOCA Arriba" << endl;
+			//	setVelocity(-getVelocity().x, -getVelocity().y);
 			//}
 
-			//if (Obs.getPositionX(i) >= getPosition().x &&  //izquierda
-			//	Obs.getPositionX(i) <= getPosition().x &&
-			//	Obs.getPositionY(i) >= getPosition().y &&
-			//	Obs.getPositionY(i) <= getPosition().y)
+			//if (((int)(getPosition().x + getRadius())) == this->posicionesX[i] + 60 && ((int)(getPosition().y + getRadius())) == this->posicionesY[i])
 			//{
-
-			//	setPosition(Obs.getPositionX(i) + getRadius(), getPosition().y);
-
-			//	setVelocity(-getVelocity().x, getVelocity().y);
-			//	cout << endl;
-			//	cout << "CHOCA izquierda" << endl;
+			//	setVelocity(-getVelocity().x, -getVelocity().y);
 			//}
 
-			//if (Obs.getPositionX(i) >= getPosition().x &&  //derecha
-			//	Obs.getPositionX(i) <= getPosition().x &&
-			//	Obs.getPositionY(i) >= getPosition().y &&
-			//	Obs.getPositionY(i) <= getPosition().y)
+			//if (((int)(getPosition().x + getRadius())) == this->posicionesX[i] && ((int)(getPosition().y + getRadius())) == this->posicionesY[i] + 60)
 			//{
-
-			//	setPosition(Obs.getPositionX(i) - getRadius(), getPosition().y);
-
-			//	setVelocity(-getVelocity().x, getVelocity().y);
-			//	cout << endl;
-			//	cout << "CHOCA derecha " << endl;
+			//	setVelocity(-getVelocity().x, -getVelocity().y);
 			//}
-			//if (Obs.getPositionX(i) >= getPosition().x &&  //dol
-			//	Obs.getPositionX(i) <= getPosition().x &&
-			//	Obs.getPositionY(i) >= getPosition().y &&
-			//	Obs.getPositionY(i) <= getPosition().y)
-
+			//if (((int)(getPosition().x + getRadius())) == this->posicionesX[i] + 60 && ((int)(getPosition().y + getRadius())) == this->posicionesY[i] + 60)
 			//{
-
-			//	setPosition(getPosition().x, Obs.getPositionY(i) - getRadius());
-
-			//	setVelocity(getVelocity().x, -getVelocity().y);
-			//	cout << endl;
-			//	cout << "CHOCA Abajo" << endl;
+			//	setVelocity(-getVelocity().x, -getVelocity().y);
 			//}
-
-
-		//}
 	}
 
 }
