@@ -30,6 +30,7 @@ Backtracking BT;
 Pathfinding PF;
 ofstream archivo;
 ofstream archivo2;
+ofstream archivo3;
 
 using namespace std;
 
@@ -237,7 +238,6 @@ int main()
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
 		ventanaPrueba.setFramerateLimit(120);
-
 		
 		vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
 
@@ -286,6 +286,9 @@ int main()
 
 		numerosRandom(cuadrosCancha2);//Se asignan los obstaculos en pantalla
 
+		archivo3.open("booleano.txt");
+		archivo3 << "";
+		archivo3.close();
 	
 		//Se abre la ventana del BP GAME
 		while (ventanaPrueba.isOpen())
@@ -306,7 +309,9 @@ int main()
 						case sf::Keyboard::C:
 							jugador = false;
 							contador++;
-							//cout << "PRESIONO C" << endl;
+							archivo3.open("booleano.txt");
+							archivo3 << "true";
+							archivo3.close();
 							break;
 					}
 
@@ -362,6 +367,7 @@ int main()
 					Pair dest(5, 19);
 
 					PF.aStarSearch(cuadrosCancha2, src, dest);
+
 
 				}
 				else
@@ -502,6 +508,7 @@ int main()
 
 	}
 	else {
+
 	sf::RenderWindow puzzle(sf::VideoMode(600, 200), "Puzzle Game");
 
 	bool openPuzzle;
@@ -606,10 +613,14 @@ int main()
 		int w = 64;
 
 
+		//vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
+
+		//cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
 
 		// initialize puzzle
 		int n = 0;
 		for (int i = 0; i < gridSize; i++)
+		{
 			for (int j = 0; j < gridSize; j++)
 			{
 				sprite[n].setTexture(t);
@@ -617,6 +628,8 @@ int main()
 				grid[i + 1][j + 1] = n;
 				n++;
 			}
+		}
+
 		while (app.isOpen())
 		{
 			Event e;

@@ -1,8 +1,11 @@
 #include "Ball.h"
 #include <fstream>
 #include <string>
+#include <Windows.h>
 ifstream archivo;
 ifstream archivo2;
+ifstream archivo3;
+ofstream archivo4;
 
 
 Ball::Ball(float radius) : dragged(false), mass(radius * 20.f), circleShape(sf::CircleShape(radius)) {
@@ -24,6 +27,23 @@ void Ball::update(float deltatime) {
 		setLado(0);
 	}
 
+	archivo3.open("booleano.txt");
+	string flag = "";
+	string temp;
+	while (archivo3 >> temp)
+	{
+		flag = temp;
+	}
+	archivo3.close();
+
+	if (flag == "true")
+	{
+		Sleep(3000);
+		setVelocity(8 ,0);
+	}
+	archivo4.open("booleano.txt");
+	archivo4 << "";
+	archivo4.close();
 	//Porteria izquierda
 	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() &&
 		getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {
@@ -65,8 +85,6 @@ void Ball::update(float deltatime) {
 	//	cout << "Y: " << this->posicionesY[i] << endl;
 	//}
 
-
-
 	archivo.open("rutas.txt");
 	archivo2.open("rutas2.txt");
 	string texto;
@@ -85,8 +103,6 @@ void Ball::update(float deltatime) {
 
 	for (int i = 0; i < 18; i++)
 	{
-
-		
 
 			if (getPosition().x >= this->posicionesX[i] && getPosition().x <= this->posicionesX[i] + 60 &&
 				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y - getRadius() <= this->posicionesY[i] + 60)
