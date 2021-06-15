@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <Windows.h>
+#include <cstdlib>
 ifstream archivo;
 ifstream archivo2;
 ifstream archivo3;
@@ -40,13 +41,20 @@ void Ball::update(float deltatime) {
 
 	if (flag == "true")
 	{
+		archivo4.open("booleano.txt");
+		archivo4 << "";
+		flag = "false";
+		archivo4.close();
 		Sleep(3000);
-		setVelocity(8 ,0);
+
+		srand(time(NULL)); //Numeros aleatorios
+		int x = 3 + (rand() % 6);
+		int y = (rand() % 4) -2;
+		cout << "X: " << x << endl;
+		cout << "Y: " << y << endl;
+		setVelocity(x,y);
 	}
-	archivo4.open("booleano.txt");
-	archivo4 << "" << endl;
-	archivo4 << "false";
-	archivo4.close();
+
 
 
 	//Porteria izquierda

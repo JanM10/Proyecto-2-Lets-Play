@@ -306,9 +306,12 @@ int main()
 						case sf::Keyboard::C:
 							jugador = false;
 							contador++;
-							archivo3.open("booleano.txt");
-							archivo3 << "true";
-							archivo3.close();
+							if (contador % 2 == 0)
+							{
+								archivo3.open("booleano.txt");
+								archivo3 << "true";
+								archivo3.close();
+							}
 							break;
 					}
 					//Cuando se deja presionado el boton izquierdo se puede jalar el balon
