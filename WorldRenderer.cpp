@@ -73,7 +73,7 @@ void WorldRenderer::setPosition(sf::RenderWindow& ventanaPrueba, int x, int y) c
 	}
 }
 
-
+//Regresa los bordes del balon 
 sf::FloatRect WorldRenderer::getGlobalBounds(sf::RenderWindow& ventanaPrueba) const
 {
 	for (Ball ball : world.getBalls()) {

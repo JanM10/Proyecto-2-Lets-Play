@@ -1,4 +1,5 @@
 #include "SFML/Graphics.hpp"
+#include "SFML/Network.hpp"
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -165,6 +166,7 @@ int main()
 	//Si el flag es falso se abre la ventana del BP Game en caso contrario abre el Puzzle game
 	if (flag == false)
 	{
+		//Crea una ventana par apoder ingresar la cantidad de obstaculos que el jugadror desee
 		sf::RenderWindow obstaculos(sf::VideoMode(400, 200), "Cuantos Obstaculos");
 
 		sf::Font arial;
@@ -174,7 +176,6 @@ int main()
 		textbox.setFont(arial);
 		textbox.setPosition({ 100, 100 });
 		textbox.setLimit(true, 1);
-
 
 		Textbox textbox2(15, sf::Color::White, false);
 
@@ -203,17 +204,14 @@ int main()
 				case::Event::TextEntered:
 					textbox.typedOn(event);
 				}
-				
-		
 			}
-			
 			obstaculos.clear();
 			textbox2.drawTo(obstaculos);
 			textbox.drawTo(obstaculos);
 			obstaculos.display();
 		}
 
-
+		//Tamano y nombre de la ventana para el BP Game
 		sf::RenderWindow ventanaPrueba(sf::VideoMode(1400, 800), "BP Game");
 
 		//////////////////////////////////////////////////////////////
@@ -228,22 +226,21 @@ int main()
 		marcador.setString("Cantida maxima de anotaciones: 5");
 		marcador.setPosition(sf::Vector2f(500, 25));
 
-		textoCompu.setString("Computadora: " + to_string(compuGoles));
-		textoCompu.setPosition(sf::Vector2f(250, 725));
-
 		textoJugador.setString("Jugador: " + to_string(jugadorGoles));
-		textoJugador.setPosition(sf::Vector2f(900, 725));
+		textoJugador.setPosition(sf::Vector2f(250, 725));
+
+		textoCompu.setString("Computadora: " + to_string(compuGoles));
+		textoCompu.setPosition(sf::Vector2f(900, 725));
 		///////////////////////////////////////////////////////////////////
 
 		const int chanchaDim = 60; //Dimensiones de la cancha
 		sf::RectangleShape cuadrados(sf::Vector2f(chanchaDim, chanchaDim));
-		ventanaPrueba.setFramerateLimit(120);
+		ventanaPrueba.setFramerateLimit(120);//Limite de FPS
 		
 		vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
 
 		cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
 		
-
 		World world;
 		WorldRenderer worldRenderer(world);
 
@@ -255,7 +252,7 @@ int main()
 		sf::Clock clock;
 
 
-		//Este for rellena la el vector con los cuadrados que se van a mostrar en pantalla, junto con sus colores y rayas
+		//Estos 2 for rellenan el vector con los cuadrados que se van a mostrar en pantalla, junto con sus colores y rayas
 		for (int x = 0; x < 11; x++)
 		{
 			cuadradosCancha[x].resize(tamanoCancha, sf::RectangleShape());
@@ -314,7 +311,7 @@ int main()
 							archivo3.close();
 							break;
 					}
-
+					//Cuando se deja presionado el boton izquierdo se puede jalar el balon
 				case sf::Event::MouseButtonPressed:
 					if (event.mouseButton.button == sf::Mouse::Left && contador%2 != 0) {
 						sf::Vector2i point = sf::Mouse::getPosition(ventanaPrueba);
@@ -351,12 +348,11 @@ int main()
 
 				worldRenderer.setVelocity(ventanaPrueba, 0, 0);
 
-				//cout << "X: " << posX << " " << "Y: " << posY << endl;
-
 				asignarColores(cuadrosCancha2);
 
 				limpiarMatriz(resultado);
 
+				//Se verifica si es el turno del jugador o de la computadora
 				if (jugador && contador%2 != 0)
 				{
 
@@ -366,8 +362,8 @@ int main()
 					//Dest muestra el destino del pathfinding
 					Pair dest(5, 19);
 
+					//Se activa el pathfinding
 					PF.aStarSearch(cuadrosCancha2, src, dest);
-
 
 				}
 				else
@@ -414,7 +410,7 @@ int main()
 				}
 			}
 
-
+			//Aqui se guardan todas las posiciones de los obstaculos par aluego leerse en la clase ball
 			archivo.open("rutas.txt");
 			archivo2.open("rutas2.txt");
 			for (int x = 0; x < 11; x++)
@@ -430,20 +426,9 @@ int main()
 			}
 			archivo.close();
 			archivo2.close();
-			
-			
-			//Se guardan las posiciones exactas de los obstaculos para las colosiones
 
-			//for (int i = 0; i < 18; i++)
-			//{
-			//	cout << endl;
-			//	cout << "POSX: " << posicionesX[i] << endl;
-			//	cout << "POSY: " << posicionesY[i] << endl;
-			//}
-
-
-			
-			//Se muestra toda la cancha en pantalla
+		
+			//Se dibuja todos los cuadrados en pantalla.
 			for (int x = 0; x < 11; x++)
 			{
 				for (int y = 0; y < 21; y++)
@@ -465,7 +450,7 @@ int main()
 			}
 
 			//Se nuestra la pantalla del ganador
-			if (compuGoles == 5)
+			if (compuGoles == 5)//Si la variable compuGoles llega a 5 significa que la computadora gano
 			{
 				ventanaPrueba.clear(sf::Color::Black);
 				ganador.setString("El ganador es la Computadora");
@@ -473,7 +458,7 @@ int main()
 				ventanaPrueba.draw(ganador);
 
 			}
-			else if (jugadorGoles == 5)
+			else if (jugadorGoles == 5)//Si la variable jugadorGoles llega a 5 significa que gano el jugador
 			{
 				ventanaPrueba.clear(sf::Color::Black);
 				ganador.setString("Felicidades eres el ganador!");
@@ -483,19 +468,18 @@ int main()
 
 			//Se suma un gol y se muestra en pantalla
 			int CL = worldRenderer.getLado(ventanaPrueba);
-			if (CL == 1)
+			if (CL == 1)//Si la variable CL es 1 significa que la computadora fue quien metio gol y se le suma 1
 			{
 				compuGoles += 1;
 				worldRenderer.setLado(ventanaPrueba);
 				textoCompu.setString("Computadora: " + to_string(compuGoles));
 			}
-			else if (CL == 2)
+			else if (CL == 2)//Si la variable CL es 2 significa que el jugador metio gol y se le suma 1 
 			{
 				jugadorGoles += 1;
 				worldRenderer.setLado(ventanaPrueba);
 				textoJugador.setString("Jugador: " + to_string(jugadorGoles));
 			}
-
 
 			//Todo lo que se muestra en pantalla
 			worldRenderer.render(ventanaPrueba);
@@ -509,10 +493,13 @@ int main()
 	}
 	else {
 
+	//Se inicia la ventana del Puzzle Game
 	sf::RenderWindow puzzle(sf::VideoMode(600, 200), "Puzzle Game");
 
 	bool openPuzzle;
 	int image;
+	/////////////////////////////////////////////
+	//Letrta y color que se va a mostrar en pantalla
 	sf::Font arial;
 	arial.loadFromFile("arial.ttf");
 	Textbox playerInput(15, sf::Color::White, true);
@@ -520,7 +507,7 @@ int main()
 	playerInput.setFont(arial);
 	playerInput.setPosition({ 100, 100 });
 	playerInput.setLimit(true, 1);
-
+	///////////////////////////////////////////
 
 	Textbox string(15, sf::Color::White, false);
 
@@ -535,7 +522,6 @@ int main()
 	warning.setPosition({ 10, 1000 });
 
 
-	///////////////////////////////////////////////////////////////////////
 	//El programa sigue corriendo siempre y cuando la ventana este abierta
 	while (puzzle.isOpen())
 	{
@@ -568,22 +554,18 @@ int main()
 
 
 		}
-
 		puzzle.clear();
 		string.drawTo(puzzle);
 		warning.drawTo(puzzle);
 		playerInput.drawTo(puzzle);
 		puzzle.display();
 	}
-	////////
 
 	if (openPuzzle) {
 
 		RenderWindow app(VideoMode(600, 600), "Genetic Puzzle!");
 		app.setFramerateLimit(60);
 		int gridSize = 0;
-
-
 
 		Texture t;
 		if (image == 2) {

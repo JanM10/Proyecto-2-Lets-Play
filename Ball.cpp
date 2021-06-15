@@ -7,15 +7,17 @@ ifstream archivo2;
 ifstream archivo3;
 ofstream archivo4;
 
-
+//Constructor del balon 
 Ball::Ball(float radius) : dragged(false), mass(radius * 20.f), circleShape(sf::CircleShape(radius)) {
 	circleShape.setFillColor(sf::Color(rand() % 255, rand() % 255, rand() % 255));
 	circleShape.setOrigin(radius, radius);
 }
 
+//Destructor del balon
 Ball::~Ball() {}
 
-void Ball::update(float deltatime) {
+//Actuliza el status del balon 
+void Ball::update(float deltatime) { 
 	setAcceleration(-getVelocity().x * 0.9f * deltatime, -getVelocity().y * 0.9f * deltatime);
 	setVelocity(getVelocity().x + (getAcceleration().x), getVelocity().y + (getAcceleration().y));
 
@@ -23,10 +25,10 @@ void Ball::update(float deltatime) {
 
 	if (getVelocity().x <= 0.01 && getVelocity().y <= 0.01)
 	{
-		//cout << "Se detuvo" << endl;
 		setLado(0);
 	}
 
+	//Se detecta si es el turno de la computadora o del jugador
 	archivo3.open("booleano.txt");
 	string flag = "";
 	string temp;
@@ -42,8 +44,11 @@ void Ball::update(float deltatime) {
 		setVelocity(8 ,0);
 	}
 	archivo4.open("booleano.txt");
-	archivo4 << "";
+	archivo4 << "" << endl;
+	archivo4 << "false";
 	archivo4.close();
+
+
 	//Porteria izquierda
 	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() &&
 		getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {
@@ -79,12 +84,7 @@ void Ball::update(float deltatime) {
 		setVelocity(getVelocity().x, -getVelocity().y);
 	}
 
-	//for (int i = 0; i < 18; i++)
-	//{
-	//	cout << "X: " << this->posicionesX[i] << endl;
-	//	cout << "Y: " << this->posicionesY[i] << endl;
-	//}
-
+	//Se agarran los puntos especificos donde se encuentran los obstaculos
 	archivo.open("rutas.txt");
 	archivo2.open("rutas2.txt");
 	string texto;
@@ -101,28 +101,32 @@ void Ball::update(float deltatime) {
 	}
 	archivo.close();
 
+	//Este for se encarga de verificar si el balon choca contra alguno de los obstaculos y hace que rebote
 	for (int i = 0; i < 18; i++)
 	{
-
+			//Arriba
 			if (getPosition().x >= this->posicionesX[i] && getPosition().x <= this->posicionesX[i] + 60 &&
 				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y - getRadius() <= this->posicionesY[i] + 60)
 			{
 				setVelocity(getVelocity().x, -getVelocity().y);
 			}
 			
+			//Abajo
 			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x + getRadius() <= this->posicionesX[i] + 60 &&
 				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y + getRadius() <= this->posicionesY[i])
 			{
 				setVelocity(getVelocity().x, -getVelocity().y);
 			}
 
-			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x - getRadius() <= this->posicionesX[i] + 60 && //Izquierda/Lewy
+			//Izquierda/Lewy
+			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x - getRadius() <= this->posicionesX[i] + 60 && 
 				getPosition().y >= this->posicionesY[i] && getPosition().y <= this->posicionesY[i] + 60)
 			{
 				setVelocity(-getVelocity().x, getVelocity().y);
 			}
 
-			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x + getRadius() <= this->posicionesX[i] && //Derecha/Dewy
+			//Derecha/Dewy
+			if (getPosition().x + getRadius() >= this->posicionesX[i] && getPosition().x + getRadius() <= this->posicionesX[i] && 
 				getPosition().y + getRadius() >= this->posicionesY[i] && getPosition().y + getRadius() <= this->posicionesY[i] + 60)
 			{
 				setVelocity(-getVelocity().x, getVelocity().y);
@@ -183,6 +187,7 @@ void Ball::setLado(int gol)
 	lado = gol;
 }
 
+//Regresa los bordes del balon
 sf::FloatRect Ball::getBounds() const
 {
 	return circleShape.getGlobalBounds();
