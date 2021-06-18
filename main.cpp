@@ -99,6 +99,15 @@ typedef tuple<double, int, int> Tuple;
 
 int main()
 {
+	sf::IpAddress ip = sf::IpAddress::getLocalAddress();
+	sf::TcpSocket socket;
+	char connectionType, mode;
+
+	std::cout << "(s) si es servidor, (c) si es cliente" << std::endl;
+	cin >> connectionType;
+
+	if (connectionType == 's') {		
+	
 	srand((unsigned)(time(NULL)));
 
 	RenderWindow window(sf::VideoMode(900, 900), "Let's Play!");
@@ -108,53 +117,54 @@ int main()
 	while (window.isOpen())
 	{
 		sf::Event event;
-
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
+		
+			while (window.pollEvent(event))
 			{
-			case sf::Event::KeyReleased:
-				switch (event.key.code)
+				switch (event.type)
 				{
-				case sf::Keyboard::Up:
-					menu.MoveUp();
-					break;
-
-				case sf::Keyboard::Down:
-					menu.MoveDown();
-					break;
-
-				case sf::Keyboard::Return:
-					switch (menu.GetPressedItem())
+				case sf::Event::KeyReleased:
+					switch (event.key.code)
 					{
-					case 0:
-						std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
-						window.close();
+					case sf::Keyboard::Up:
+						menu.MoveUp();
 						break;
-					case 1:
-						std::cout << "BP Game se esta abriendo" << std::endl;
-						flag = false;
-						window.close();
+
+					case sf::Keyboard::Down:
+						menu.MoveDown();
 						break;
-					case 2:
-						std::cout << "Abriendo las opciones" << std::endl;
-						break;
-					case 3:
-						window.close();
+
+					case sf::Keyboard::Return:
+						switch (menu.GetPressedItem())
+						{
+						case 0:
+							std::cout << "Genetic Puzzle se esta abriendo" << std::endl;
+							window.close();
+							break;
+						case 1:
+							std::cout << "BP Game se esta abriendo" << std::endl;
+							flag = false;
+							window.close();
+							break;
+						case 2:
+							std::cout << "Abriendo las opciones" << std::endl;
+							break;
+						case 3:
+							window.close();
+							break;
+						}
+
 						break;
 					}
 
 					break;
+				case sf::Event::Closed:
+					window.close();
+
+					break;
+
 				}
-
-				break;
-			case sf::Event::Closed:
-				window.close();
-
-				break;
-
 			}
-		}
+		
 
 		window.clear();
 
@@ -162,6 +172,7 @@ int main()
 
 		window.display();
 	}
+	
 
 	//Si el flag es falso se abre la ventana del BP Game en caso contrario abre el Puzzle game
 	if (flag == false)
@@ -181,7 +192,9 @@ int main()
 
 		textbox2.setString("Escriba la cantidadn de jugadores que desea:");
 		textbox2.setFont(arial);
-		textbox2.setPosition({ 75, 50 });
+		textbox2.setPosition({ 75, 50 }); 
+		
+
 
 		//En esta ventana el usuario puede escribir la cantidad de jugadores que desea poner en la cancha
 		while (obstaculos.isOpen())
@@ -649,6 +662,14 @@ int main()
 
 	}
 }
+	sf::TcpListener listener;
+	listener.listen(2000);
+	listener.accept(socket);
+	
+	}
+	else if (connectionType == 'c') {
+		socket.connect(ip, 2000);
+	}
 	
 }
 
