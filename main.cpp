@@ -496,21 +496,18 @@ int main()
 	}
 	else {
 
-	//Se inicia la ventana del Puzzle Game
-	sf::RenderWindow puzzle(sf::VideoMode(600, 200), "Puzzle Game");
+	sf::RenderWindow puzzle(sf::VideoMode(600, 200), "Puzzle Game");// Se crea la ventana de seleccion del tamaño del puzzle
 
-	bool openPuzzle;
+	bool openPuzzle; //Se declaran variables para poder abrir la pantalla del puzzle
 	int image;
-	/////////////////////////////////////////////
-	//Letrta y color que se va a mostrar en pantalla
+
 	sf::Font arial;
 	arial.loadFromFile("arial.ttf");
-	Textbox playerInput(15, sf::Color::White, true);
+	Textbox playerInput(15, sf::Color::White, true);// Esta funcion llama a Textbox, para poder crear una caja de almacenamiento de datos.
 
 	playerInput.setFont(arial);
 	playerInput.setPosition({ 100, 100 });
 	playerInput.setLimit(true, 1);
-	///////////////////////////////////////////
 
 	Textbox string(15, sf::Color::White, false);
 
@@ -525,26 +522,24 @@ int main()
 	warning.setPosition({ 10, 1000 });
 
 
-	//El programa sigue corriendo siempre y cuando la ventana este abierta
+
 	while (puzzle.isOpen())
 	{
 
-		//Revisa todos los eventos que se activaron desde la ultima iteracion 
 		Event event;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
-			image = playerInput.getText().front() - 48;
+			image = playerInput.getText().front() - 48;// Aqui se guarda el tamaño de la matriz del usuario
 			if (image > 6 || image < 2) {
-				warning.setPosition({ 10, 65 });
+				warning.setPosition({ 10, 65 });// En esta funcion, se revisa si el usuario ingresa datos no validos de una matriz, en cuyo caso muestra un mensaje de advertencia.
 			}
 			else {
-				openPuzzle = true;
+				openPuzzle = true;// Si se ingresó un valor correcto, se cierra la pantalla de selección y se abre el puzzle
 				puzzle.close();
 			}
 
 		}
 		while (puzzle.pollEvent(event)) {
 
-			//Se cierra la ventana
 			switch (event.type)
 			{
 			case sf::Event::Closed:
@@ -554,14 +549,13 @@ int main()
 			case::Event::TextEntered:
 				playerInput.typedOn(event);
 			}
-
-
 		}
+
 		puzzle.clear();
 		string.drawTo(puzzle);
 		warning.drawTo(puzzle);
 		playerInput.drawTo(puzzle);
-		puzzle.display();
+		puzzle.display();// Aqui se dibuja cada parte necesaria para la pantalla de seleccion
 	}
 
 	if (openPuzzle) {
@@ -570,7 +564,8 @@ int main()
 		app.setFramerateLimit(60);
 		int gridSize = 0;
 
-		Texture t;
+		Texture t;// Aqui se crea la pantalla del puzzle y se designa una textura
+
 		if (image == 2) {
 			t.loadFromFile("images/2x2.png");
 			gridSize = 2;
@@ -584,37 +579,30 @@ int main()
 			gridSize = 4;
 		}
 		if (image == 5) {
-			t.loadFromFile("images/red.png");
+			t.loadFromFile("images/5x5.png");
 			gridSize = 5;
 		}
 		if (image == 6) {
 			t.loadFromFile("images/smiley.png");
 			gridSize = 4;
-		}
+		}// Estas funciones cargan la imagen necesaria segun el tamaño de la matriz
 
 		int grid[7][7];
 		Sprite sprite[25];
-		memset(grid, -1, sizeof(int) * (gridSize + 2) * (gridSize + 2)); // initialize array to -1
+		memset(grid, -1, sizeof(int) * (gridSize + 2) * (gridSize + 2)); // Aqui se define el tamaño de la matriz, para poder interactuar con el juego.
 		int w = 64;
 
 
-		//vector<vector<RectangleShape>> cuadradosCancha;//En ese vector se almacenan los cuadrados de la cancha
-
-		//cuadradosCancha.resize(tamanoCancha, vector<sf::RectangleShape>());
-
-		// initialize puzzle
+		// Se inicializa el puzzle
 		int n = 0;
 		for (int i = 0; i < gridSize; i++)
-		{
 			for (int j = 0; j < gridSize; j++)
 			{
 				sprite[n].setTexture(t);
 				sprite[n].setTextureRect(IntRect(j * w, i * w, w, w));
 				grid[i + 1][j + 1] = n;
 				n++;
-			}
-		}
-
+			}// En esta funcion se dibujan las partes del puzzle en la matriz deseada.
 		while (app.isOpen())
 		{
 			Event e;
@@ -624,7 +612,7 @@ int main()
 					app.close();
 
 				if (e.type == Event::MouseButtonPressed)
-					if (e.key.code == Mouse::Left)
+					if (e.key.code == Mouse::Left)// Aqui se revisa si se hace click en la matriz
 					{
 						Vector2i pos = Mouse::getPosition(app);
 						int x = pos.y / w + 1;
@@ -636,14 +624,14 @@ int main()
 						if (grid[x - 1][y] == (gridSize * gridSize) - 1) { dx = -1; }
 						if (grid[x][y + 1] == (gridSize * gridSize) - 1) { dy = 1; }
 						if (grid[x][y - 1] == (gridSize * gridSize) - 1) { dy = -1; }
+						//Estas funciones revisan si el click fue en una pieza que está al lado de la pieza en blanco.
 
-						// exchange blank and grid
+						//Si se hizo click en una pieza al lado de la pieza en blanco, se intercambian de lugar.
 						int n = grid[x][y];
 						grid[x][y] = ((gridSize * gridSize) - 1);
 						grid[x + dx][y + dy] = n;
 
 					}
-
 			}
 
 			app.clear(Color::Color(82, 82, 82));
@@ -653,14 +641,14 @@ int main()
 					int n = grid[i + 1][j + 1];
 					sprite[n].setPosition(j * w, i * w);
 					app.draw(sprite[n]);
-				}
+				}//Esta funcion es para colocar las piezas con sus respectivos tamaños y colores correctamente.
 
-			app.display();
+			app.display();// Muestra la pantalla del puzzle.
 
 		}
 
 	}
-	}
+}
 	
 }
 

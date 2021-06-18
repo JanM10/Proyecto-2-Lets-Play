@@ -55,8 +55,6 @@ void Ball::update(float deltatime) {
 		setVelocity(x,y);
 	}
 
-
-
 	//Porteria izquierda
 	if (getPosition().x >= 60 + getRadius() && getPosition().x <= 120 + getRadius() &&
 		getPosition().y >= 330 - getRadius() && getPosition().y <= 480 - getRadius()) {

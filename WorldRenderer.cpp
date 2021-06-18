@@ -1,7 +1,9 @@
 #include "WorldRenderer.h"
 
+//Constructor
 WorldRenderer::WorldRenderer(World& world) : world(world) {}
 
+//Destructor
 WorldRenderer::~WorldRenderer() {}
 
 //Carga el mundo
@@ -80,8 +82,6 @@ sf::FloatRect WorldRenderer::getGlobalBounds(sf::RenderWindow& ventanaPrueba) co
 		return ball.getBounds();
 	}
 }
-
-//cout << "X: " << ((int)(ball.getPosition().x / 60)) - 1 << " " << "Y: " << ((int)ball.getPosition().y / 60) - 1 << endl;
 
 //Devuelve el lado donde se metio gol
 int WorldRenderer::getLado(sf::RenderWindow& ventanaPrueba) const

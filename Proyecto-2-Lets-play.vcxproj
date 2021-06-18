@@ -148,6 +148,7 @@
     <ClCompile Include="Backtracking.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="GeneticAlgorithm.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Pathfinding.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="Backtracking.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="Textbox.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Pathfinding.h" />

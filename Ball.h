@@ -41,7 +41,6 @@ public:
 
 private:
 
-
 	bool dragged;
 	float mass;
 	int lado;
